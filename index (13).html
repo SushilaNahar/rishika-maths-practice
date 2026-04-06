@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#FF6B6B">
+<title>Rishika's Maths Practice</title>
+<style>
+html { background: #FFF9F0; }
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+:root {
+  --coral: #FF6B6B; --coral-dark: #e85555;
+  --teal: #2EC4B6; --teal-dark: #25a99d;
+  --yellow: #FFE66D; --yellow-dark: #f5d93a;
+  --cream: #FFF9F0; --charcoal: #2D2D2D; --white: #ffffff;
+  --shadow: 0 4px 15px rgba(0,0,0,0.12);
+}
+body { font-family: Georgia, serif; background: var(--cream); color: var(--charcoal); min-height: 100vh; overflow-x: hidden; }
+.screen { display: none; min-height: 100vh; flex-direction: column; }
+.screen.active { display: flex; }
+
+/* HOME */
+#home-screen { background: linear-gradient(160deg, #FF6B6B 0%, #ff8e53 50%, #FFE66D 100%); padding: 0 0 30px 0; }
+.home-header { padding: 50px 20px 30px; text-align: center; }
+.home-header .star-row { font-size: 28px; margin-bottom: 12px; letter-spacing: 6px; }
+.home-header h1 { font-size: 32px; color: white; font-weight: bold; text-shadow: 0 2px 8px rgba(0,0,0,0.15); line-height: 1.2; }
+.home-header p { color: rgba(255,255,255,0.9); font-size: 15px; margin-top: 6px; font-style: italic; }
+.topics-grid { padding: 0 16px; display: flex; flex-direction: column; gap: 12px; }
+.topic-card { background: white; border-radius: 18px; padding: 18px 20px; display: flex; align-items: center; gap: 16px; box-shadow: var(--shadow); cursor: pointer; border: none; width: 100%; text-align: left; }
+.topic-card:active { transform: scale(0.97); }
+.topic-icon { width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 26px; flex-shrink: 0; }
+.t1 .topic-icon { background: #FFE8E8; } .t2 .topic-icon { background: #E8F8F7; }
+.t3 .topic-icon { background: #FFF8E1; } .t4 .topic-icon { background: #E8F4FF; }
+.t5 .topic-icon { background: #F3E8FF; } .t6 .topic-icon { background: #E8FFE8; }
+.t7 .topic-icon { background: #FFE8F5; } .t8 .topic-icon { background: #FFF0E8; }
+.t9 { background: linear-gradient(135deg, #FF6B6B, #2EC4B6) !important; }
+.t9 .topic-info h3 { color: white !important; } .t9 .topic-info p { color: rgba(255,255,255,0.85) !important; }
+.t9 .topic-icon { background: rgba(255,255,255,0.2); }
+.topic-info { flex: 1; }
+.topic-info h3 { font-size: 16px; color: var(--charcoal); font-weight: bold; margin-bottom: 3px; }
+.topic-info p { font-size: 12px; color: #888; font-style: italic; }
+.topic-arrow { font-size: 18px; color: #ccc; }
+
+/* TOPIC SCREEN */
+.topic-header { padding: 50px 20px 20px; display: flex; align-items: center; gap: 14px; }
+.back-btn { background: rgba(255,255,255,0.25); border: none; border-radius: 10px; width: 38px; height: 38px; font-size: 20px; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.topic-header-info h2 { color: white; font-size: 20px; line-height: 1.2; }
+.topic-header-info p { color: rgba(255,255,255,0.85); font-size: 12px; margin-top: 2px; }
+.tier-selector { padding: 20px 16px 10px; }
+.tier-selector h3 { font-size: 14px; color: #888; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; }
+.tier-buttons { display: flex; gap: 10px; }
+.tier-btn { flex: 1; padding: 14px 8px; border-radius: 14px; border: 2.5px solid transparent; background: white; cursor: pointer; text-align: center; box-shadow: var(--shadow); }
+.tier-btn:active { transform: scale(0.96); }
+.tier-btn .tier-emoji { font-size: 22px; display: block; margin-bottom: 4px; }
+.tier-btn .tier-name { font-size: 11px; color: #666; font-weight: bold; display: block; }
+.tier-btn.selected { border-color: var(--coral); background: #fff5f5; }
+.start-btn { display: block; width: calc(100% - 32px); margin: 16px 16px 0; padding: 16px; background: var(--coral); color: white; border: none; border-radius: 16px; font-size: 17px; font-weight: bold; cursor: pointer; box-shadow: var(--shadow); font-family: Georgia, serif; }
+.start-btn:active { background: var(--coral-dark); }
+.topic-info-box { margin: 16px; background: white; border-radius: 16px; padding: 18px; box-shadow: var(--shadow); }
+.topic-info-box h4 { font-size: 14px; color: var(--teal); margin-bottom: 10px; font-weight: bold; }
+.topic-info-box ul { list-style: none; padding: 0; }
+.topic-info-box ul li { font-size: 13px; color: #555; padding: 5px 0 5px 20px; border-bottom: 1px solid #f5f5f5; position: relative; }
+.topic-info-box ul li:before { content: 'v'; position: absolute; left: 0; color: var(--teal); font-weight: bold; }
+.topic-info-box ul li:last-child { border-bottom: none; }
+
+/* QUESTION SCREEN */
+.question-header { padding: 50px 16px 16px; display: flex; align-items: center; gap: 12px; }
+.question-header .back-btn { background: rgba(255,255,255,0.25); }
+.q-header-info { flex: 1; }
+.q-header-info h3 { color: white; font-size: 16px; }
+.q-header-info .progress-text { color: rgba(255,255,255,0.85); font-size: 12px; }
+.home-icon-btn { background: rgba(255,255,255,0.25); border: none; border-radius: 10px; width: 38px; height: 38px; font-size: 18px; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.progress-bar-wrap { background: #eee; height: 6px; }
+.progress-bar-fill { height: 6px; background: var(--teal); transition: width 0.4s ease; }
+.question-body { padding: 16px; flex: 1; }
+.question-card { background: white; border-radius: 18px; padding: 20px; box-shadow: var(--shadow); margin-bottom: 14px; }
+.question-type-badge { display: inline-block; background: #f0f9f8; color: var(--teal); font-size: 11px; font-weight: bold; padding: 4px 10px; border-radius: 20px; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+.question-text { font-size: 16px; color: var(--charcoal); line-height: 1.55; margin-bottom: 14px; white-space: pre-line; }
+.question-hint { background: #fffbe6; border-left: 3px solid var(--yellow-dark); border-radius: 0 10px 10px 0; padding: 10px 14px; font-size: 13px; color: #666; margin-top: 10px; display: none; }
+.question-hint.visible { display: block; }
+.answer-row { display: flex; align-items: center; gap: 10px; background: white; border-radius: 14px; padding: 12px 16px; box-shadow: var(--shadow); margin-bottom: 14px; }
+.answer-display { flex: 1; font-size: 28px; color: var(--charcoal); font-weight: bold; min-height: 40px; display: flex; align-items: center; }
+.answer-display.placeholder { color: #ccc; font-size: 18px; font-weight: normal; }
+.answer-unit { font-size: 15px; color: #999; }
+.numpad { background: white; border-radius: 18px; padding: 12px; box-shadow: var(--shadow); margin-bottom: 14px; }
+.numpad-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.num-btn { background: #f8f8f8; border: none; border-radius: 12px; padding: 16px 8px; font-size: 22px; font-weight: bold; color: var(--charcoal); cursor: pointer; font-family: Georgia, serif; }
+.num-btn:active { background: #eee; transform: scale(0.94); }
+.num-btn.del-btn { background: #FFE8E8; color: var(--coral); font-size: 18px; }
+.num-btn.dec-btn { background: #f0f0f0; font-size: 18px; }
+.num-btn.neg-btn { background: #e8f0ff; color: #4466cc; font-size: 16px; }
+.num-btn.submit { grid-column: span 3; background: var(--coral); color: white; font-size: 17px; padding: 16px; border-radius: 14px; margin-top: 4px; }
+.num-btn.submit:active { background: var(--coral-dark); }
+.hint-btn { display: block; width: 100%; background: #fffbe6; border: 2px solid var(--yellow-dark); border-radius: 12px; padding: 12px; font-size: 14px; color: #888; cursor: pointer; font-family: Georgia, serif; margin-bottom: 10px; }
+
+/* RESULT */
+.result-header { padding: 50px 16px 20px; text-align: center; }
+.result-emoji { font-size: 60px; margin-bottom: 12px; }
+.result-title { font-size: 26px; font-weight: bold; color: var(--charcoal); margin-bottom: 6px; }
+.result-subtitle { font-size: 15px; color: #888; }
+.worked-solution { margin: 0 16px 16px; background: white; border-radius: 18px; padding: 20px; box-shadow: var(--shadow); }
+.worked-solution h4 { font-size: 14px; color: var(--teal); margin-bottom: 12px; font-weight: bold; text-transform: uppercase; }
+.solution-steps { font-size: 14px; color: #555; line-height: 1.8; white-space: pre-line; }
+.result-actions { padding: 0 16px; display: flex; flex-direction: column; gap: 10px; }
+.btn-next { background: var(--coral); color: white; border: none; border-radius: 16px; padding: 16px; font-size: 17px; font-weight: bold; cursor: pointer; font-family: Georgia, serif; box-shadow: var(--shadow); }
+.btn-next:active { background: var(--coral-dark); }
+.btn-home { background: white; color: var(--charcoal); border: 2px solid #eee; border-radius: 16px; padding: 14px; font-size: 15px; cursor: pointer; font-family: Georgia, serif; }
+
+/* COMPLETE */
+#complete-screen { background: linear-gradient(160deg, var(--teal) 0%, #1a9e92 100%); align-items: center; justify-content: center; text-align: center; padding: 40px 24px; }
+.complete-stars { font-size: 50px; margin-bottom: 20px; letter-spacing: 8px; }
+.complete-title { font-size: 30px; font-weight: bold; color: white; margin-bottom: 10px; }
+.complete-subtitle { font-size: 16px; color: rgba(255,255,255,0.9); margin-bottom: 30px; line-height: 1.5; }
+.score-box { background: white; border-radius: 20px; padding: 24px 40px; margin-bottom: 30px; box-shadow: 0 8px 25px rgba(0,0,0,0.15); }
+.score-number { font-size: 56px; font-weight: bold; color: var(--coral); }
+.score-label { font-size: 14px; color: #888; margin-top: 4px; }
+.complete-actions { display: flex; flex-direction: column; gap: 12px; width: 100%; }
+.btn-again { background: var(--yellow); color: var(--charcoal); border: none; border-radius: 16px; padding: 16px; font-size: 17px; font-weight: bold; cursor: pointer; font-family: Georgia, serif; box-shadow: var(--shadow); }
+.btn-home-white { background: rgba(255,255,255,0.2); color: white; border: 2px solid rgba(255,255,255,0.4); border-radius: 16px; padding: 14px; font-size: 15px; cursor: pointer; font-family: Georgia, serif; }
+
+/* PARENT */
+#parent-screen { background: var(--cream); }
+.parent-header { background: var(--charcoal); padding: 50px 16px 20px; display: flex; align-items: center; gap: 14px; }
+.parent-header h2 { color: white; font-size: 20px; }
+.parent-body { padding: 16px; }
+.parent-topic-card { background: white; border-radius: 16px; padding: 16px 18px; margin-bottom: 12px; box-shadow: var(--shadow); }
+.parent-topic-name { font-size: 15px; font-weight: bold; color: var(--charcoal); margin-bottom: 10px; }
+.tier-progress-row { display: flex; gap: 8px; margin-bottom: 6px; align-items: center; }
+.tier-progress-label { font-size: 12px; color: #888; width: 110px; flex-shrink: 0; }
+.tier-progress-bar { flex: 1; height: 8px; background: #f0f0f0; border-radius: 4px; overflow: hidden; }
+.tier-progress-fill { height: 100%; border-radius: 4px; background: var(--teal); }
+.tier-progress-pct { font-size: 12px; color: #888; width: 35px; text-align: right; }
+.scroll-body { overflow-y: auto; flex: 1; }
+</style>
+</head>
+<body>
+
+<!-- HOME -->
+<div id="home-screen" class="screen active">
+  <div class="home-header">
+    <div class="star-row">* * *</div>
+    <h1>Rishika's Maths<br>Practice</h1>
+    <p>Choose a topic and start practising!</p>
+  </div>
+  <div class="topics-grid">
+    <button class="topic-card t1" onclick="openTopic('arithmetic')">
+      <div class="topic-icon">N</div>
+      <div class="topic-info"><h3>Number &amp; Arithmetic</h3><p>Multiplication, division, mental maths</p></div>
+      <div class="topic-arrow">></div>
+    </button>
+    <button class="topic-card t2" onclick="openTopic('fractions')">
+      <div class="topic-icon">1/2</div>
+      <div class="topic-info"><h3>Fractions</h3><p>Equivalent, compare, add &amp; subtract</p></div>
+      <div class="topic-arrow">></div>
+    </button>
+    <button class="topic-card t3" onclick="openTopic('decimals')">
+      <div class="topic-icon">0.5</div>
+      <div class="topic-info"><h3>Decimals</h3><p>Place value, operations, money</p></div>
+      <div class="topic-arrow">></div>
+    </button>
+    <button class="topic-card t4" onclick="openTopic('negative')">
+      <div class="topic-icon">-3</div>
+      <div class="topic-info"><h3>Negative Numbers</h3><p>Below zero, temperature, ordering</p></div>
+      <div class="topic-arrow">></div>
+    </button>
+    <button class="topic-card t5" onclick="openTopic('rounding')">
+      <div class="topic-icon">~10</div>
+      <div class="topic-info"><h3>Rounding</h3><p>Nearest 10, 100, 1000 &amp; estimation</p></div>
+      <div class="topic-arrow">></div>
+    </button>
+    <button class="topic-card t6" onclick="openTopic('geometry')">
+      <div class="topic-icon">[]</div>
+      <div class="topic-info"><h3>Area &amp; Perimeter</h3><p>Shapes, grids, compound figures</p></div>
+      <div class="topic-arrow">></div>
+    </button>
+    <button class="topic-card t7" onclick="openTopic('measurement')">
+      <div class="topic-icon">kg</div>
+      <div class="topic-info"><h3>Units of Measurement</h3><p>Length, weight, capacity, converting</p></div>
+      <div class="topic-arrow">></div>
+    </button>
+    <button class="topic-card t8" onclick="openTopic('time')">
+      <div class="topic-icon">12:00</div>
+      <div class="topic-info"><h3>Time</h3><p>Clocks, 24-hour, duration, timetables</p></div>
+      <div class="topic-arrow">></div>
+    </button>
+    <button class="topic-card t9" onclick="openTopic('mixed')">
+      <div class="topic-icon">*</div>
+      <div class="topic-info"><h3>Mixed Round</h3><p>All topics - the ultimate challenge!</p></div>
+      <div class="topic-arrow">></div>
+    </button>
+  </div>
+  <div style="text-align:center;margin-top:24px;padding-bottom:10px;">
+    <button onclick="showScreen('parent-screen')" style="background:none;border:none;color:rgba(80,80,80,0.5);font-size:12px;cursor:pointer;font-family:Georgia,serif;">Parent View</button>
+  </div>
+</div>
+
+<!-- TOPIC SCREEN -->
+<div id="topic-screen" class="screen">
+  <div class="topic-header" id="topic-header-bar" style="background:var(--coral);">
+    <button class="back-btn" onclick="showScreen('home-screen')">&#8249;</button>
+    <div class="topic-header-info">
+      <h2 id="topic-title">Topic</h2>
+      <p id="topic-subtitle">Choose your level below</p>
+    </div>
+  </div>
+  <div class="scroll-body">
+    <div class="tier-selector">
+      <h3>Choose your level</h3>
+      <div class="tier-buttons">
+        <button class="tier-btn selected" onclick="selectTier(this,'easy')">
+          <span class="tier-emoji">&#127807;</span>
+          <span class="tier-name">Getting Started</span>
+        </button>
+        <button class="tier-btn" onclick="selectTier(this,'medium')">
+          <span class="tier-emoji">&#11088;</span>
+          <span class="tier-name">Getting There</span>
+        </button>
+        <button class="tier-btn" onclick="selectTier(this,'hard')">
+          <span class="tier-emoji">&#128640;</span>
+          <span class="tier-name">Challenge</span>
+        </button>
+      </div>
+    </div>
+    <button class="start-btn" onclick="startSession()">Start Practice &#9654;</button>
+    <div class="topic-info-box">
+      <h4>This topic covers</h4>
+      <ul id="topic-covers-list"></ul>
+    </div>
+    <div style="height:20px;"></div>
+  </div>
+</div>
+
+<!-- QUESTION SCREEN -->
+<div id="question-screen" class="screen">
+  <div class="question-header" id="q-header-bar" style="background:var(--teal);">
+    <button class="back-btn" onclick="showScreen('topic-screen')">&#8249;</button>
+    <div class="q-header-info">
+      <h3 id="q-topic-name">Topic</h3>
+      <div class="progress-text" id="q-progress-text">Question 1 of 5</div>
+    </div>
+    <button class="home-icon-btn" onclick="showScreen('home-screen')">&#8962;</button>
+  </div>
+  <div class="progress-bar-wrap">
+    <div class="progress-bar-fill" id="progress-bar" style="width:0%"></div>
+  </div>
+  <div class="scroll-body">
+    <div class="question-body">
+      <div class="question-card">
+        <div class="question-type-badge" id="q-type-badge">Word Problem</div>
+        <div class="question-text" id="q-text"></div>
+        <div class="question-hint" id="q-hint"></div>
+      </div>
+      <div class="answer-row">
+        <div class="answer-display placeholder" id="answer-display">Type your answer...</div>
+        <div class="answer-unit" id="answer-unit"></div>
+      </div>
+      <button class="hint-btn" id="hint-btn" onclick="showHint()">&#128161; Need a hint?</button>
+      <div class="numpad">
+        <div class="numpad-grid">
+          <button class="num-btn" onclick="numPress('7')">7</button>
+          <button class="num-btn" onclick="numPress('8')">8</button>
+          <button class="num-btn" onclick="numPress('9')">9</button>
+          <button class="num-btn" onclick="numPress('4')">4</button>
+          <button class="num-btn" onclick="numPress('5')">5</button>
+          <button class="num-btn" onclick="numPress('6')">6</button>
+          <button class="num-btn" onclick="numPress('1')">1</button>
+          <button class="num-btn" onclick="numPress('2')">2</button>
+          <button class="num-btn" onclick="numPress('3')">3</button>
+          <button class="num-btn neg-btn" id="neg-btn" onclick="numPress('-')">+/-</button>
+          <button class="num-btn" onclick="numPress('0')">0</button>
+          <button class="num-btn dec-btn" id="dec-btn" onclick="numPress('.')">.</button>
+          <button class="num-btn del-btn" onclick="numDelete()">&#9003;</button>
+          <button class="num-btn submit" onclick="submitAnswer()">Check Answer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- RESULT SCREEN -->
+<div id="result-screen" class="screen">
+  <div class="scroll-body">
+    <div class="result-header">
+      <div class="result-emoji" id="result-emoji">&#127881;</div>
+      <div class="result-title" id="result-title">Correct!</div>
+      <div class="result-subtitle" id="result-subtitle">Well done, Rishika!</div>
+    </div>
+    <div class="worked-solution">
+      <h4>How to solve it</h4>
+      <div class="solution-steps" id="solution-steps"></div>
+    </div>
+    <div class="result-actions">
+      <button class="btn-next" id="btn-next" onclick="nextQuestion()">Next Question</button>
+      <button class="btn-home" onclick="showScreen('home-screen')">Back to Home</button>
+    </div>
+    <div style="height:20px;"></div>
+  </div>
+</div>
+
+<!-- COMPLETE SCREEN -->
+<div id="complete-screen" class="screen">
+  <div class="complete-stars" id="complete-stars">* * * * *</div>
+  <div class="complete-title">Session Complete!</div>
+  <div class="complete-subtitle" id="complete-subtitle">Fantastic work, Rishika!</div>
+  <div class="score-box">
+    <div class="score-number" id="final-score">5/5</div>
+    <div class="score-label">questions correct</div>
+  </div>
+  <div class="complete-actions">
+    <button class="btn-again" onclick="restartSession()">Try Again</button>
+    <button class="btn-home-white" onclick="showScreen('home-screen')">Back to Home</button>
+  </div>
+</div>
+
+<!-- PARENT SCREEN -->
+<div id="parent-screen" class="screen">
+  <div class="parent-header">
+    <button class="back-btn" onclick="showScreen('home-screen')" style="background:rgba(255,255,255,0.15);">&#8249;</button>
+    <h2>Parent View</h2>
+  </div>
+  <div class="scroll-body">
+    <div class="parent-body" id="parent-body"></div>
+    <div style="height:20px;"></div>
+  </div>
+</div>
+
+<script>
+var ALL_QUESTIONS = {"arithmetic":{"easy":[{"type":"Word Problem","text":"Rishika's dadi buys 7 packets of biscuits. Each packet costs Rs.12. How much does she spend altogether?","answer":"84","unit":"Rs.","hint":"Think: 7 groups of Rs.12. Multiply 7 x 12.","solution":"7 x 12\n7 x 10 = 70\n7 x 2 = 14\n70 + 14 = Rs.84\nAnswer: Rs.84"},{"type":"Word Problem","text":"A vegetable vendor has 56 tomatoes. He packs them equally into 8 bags. How many in each bag?","answer":"7","unit":"tomatoes","hint":"Share 56 equally into 8 groups. Divide.","solution":"56 divided by 8\n8 x 7 = 56\nAnswer: 7 tomatoes per bag"},{"type":"Word Problem","text":"A cricket team scores 9 runs per over for 6 overs. What is their total score?","answer":"54","unit":"runs","hint":"Multiply runs per over by number of overs.","solution":"9 x 6 = 54\nAnswer: 54 runs"},{"type":"True or False","text":"True or False: 63 divided by 9 = 8\n\nType 1 for True, 0 for False.","answer":"0","unit":"","hint":"9 x 8 = 72, not 63. Work out 63 divided by 9.","solution":"63 divided by 9 = 7 (not 8)\n9 x 7 = 63\nAnswer: FALSE (type 0)"},{"type":"Missing Number","text":"A shopkeeper packs 72 mangoes into 6 equal boxes. How many mangoes in each box?","answer":"12","unit":"mangoes","hint":"Divide 72 by 6.","solution":"72 divided by 6 = 12\nCheck: 6 x 12 = 72\nAnswer: 12 mangoes"},{"type":"Word Problem","text":"Rishika buys 8 pencils at Rs.6 each. How much does she spend?","answer":"48","unit":"Rs.","hint":"Multiply 8 x 6.","solution":"8 x 6 = 48\nAnswer: Rs.48"},{"type":"Spot the Mistake","text":"Spot the mistake: Priya says 8 x 7 = 54. What is the correct answer?","answer":"56","unit":"","hint":"Count up in 7s eight times: 7, 14, 21, 28, 35, 42, 49, 56","solution":"8 x 7 = 56 (not 54)\nPriya made an error\nAnswer: 56"},{"type":"Word Problem","text":"A school has 9 rows of chairs. Each row has 11 chairs. How many chairs altogether?","answer":"99","unit":"chairs","hint":"9 x 11. Try 9 x 10 = 90, then add 9 more.","solution":"9 x 11\n9 x 10 = 90\n9 x 1 = 9\n90 + 9 = 99\nAnswer: 99 chairs"},{"type":"Word Problem","text":"A train carriage has 48 seats. There are 6 carriages. How many seats in total?","answer":"288","unit":"seats","hint":"48 x 6. Try 40 x 6 first, then 8 x 6.","solution":"48 x 6\n40 x 6 = 240\n8 x 6 = 48\n240 + 48 = 288\nAnswer: 288 seats"},{"type":"Word Problem","text":"Rishika has Rs.84. She shares it equally with 3 friends (4 people total). How much does each person get?","answer":"21","unit":"Rs.","hint":"Divide Rs.84 by 4 people.","solution":"84 divided by 4\n80 divided by 4 = 20\n4 divided by 4 = 1\n20 + 1 = Rs.21 each\nAnswer: Rs.21"}],"medium":[{"type":"Word Problem","text":"Rishika buys 6 notebooks at Rs.15 each and 4 pens at Rs.8 each. How much altogether?","answer":"122","unit":"Rs.","hint":"Find cost of notebooks, then pens, then add both.","solution":"6 x Rs.15 = Rs.90 (notebooks)\n4 x Rs.8 = Rs.32 (pens)\nRs.90 + Rs.32 = Rs.122\nAnswer: Rs.122"},{"type":"Word Problem","text":"A school has 8 classrooms with 34 children each. How many children altogether?","answer":"272","unit":"children","hint":"34 x 8. Try 30 x 8 first, then 4 x 8.","solution":"34 x 8\n30 x 8 = 240\n4 x 8 = 32\n240 + 32 = 272\nAnswer: 272 children"},{"type":"Word Problem","text":"A train travels 144km in 6 hours. How far does it travel in one hour?","answer":"24","unit":"km","hint":"Divide total distance by number of hours.","solution":"144 divided by 6 = 24\n6 x 24 = 144\nAnswer: 24km per hour"},{"type":"Spot the Mistake","text":"Spot the mistake: Rohan works out 23 x 4 = 82. What is the correct answer?","answer":"92","unit":"","hint":"Try 20 x 4 = 80, then 3 x 4 = 12. Add together.","solution":"23 x 4\n20 x 4 = 80\n3 x 4 = 12\n80 + 12 = 92\nRohan got 82 - wrong!\nAnswer: 92"},{"type":"Word Problem","text":"Rishika saves Rs.35 every week. Her brother saves Rs.28 every week. How much more does Rishika save over 9 weeks?","answer":"63","unit":"Rs.","hint":"Find the difference per week first, then multiply by 9.","solution":"Difference per week = Rs.35 - Rs.28 = Rs.7\n9 weeks = Rs.7 x 9 = Rs.63\nAnswer: Rs.63 more"},{"type":"Word Problem","text":"A rickshaw driver earns Rs.180 per day. He works 6 days a week. How much does he earn in 4 weeks?","answer":"4320","unit":"Rs.","hint":"First find weekly earnings, then multiply by 4 weeks.","solution":"Per week = Rs.180 x 6 = Rs.1080\n4 weeks = Rs.1080 x 4 = Rs.4320\nAnswer: Rs.4320"},{"type":"Odd One Out","text":"Which gives a different answer?\n36 divided by 4, 27 divided by 3, 45 divided by 5, 32 divided by 4\n\nType the answer that is different.","answer":"8","unit":"","hint":"Work out each division and see which result is different.","solution":"36 divided by 4 = 9\n27 divided by 3 = 9\n45 divided by 5 = 9\n32 divided by 4 = 8\nOdd one out: 32 divided by 4 = 8\nAnswer: 8"},{"type":"Word Problem","text":"A box holds 24 laddoos. A sweet shop makes 15 boxes for Diwali. How many laddoos in total?","answer":"360","unit":"laddoos","hint":"Multiply 24 x 15. Try 24 x 10 = 240, then 24 x 5 = 120.","solution":"24 x 15\n24 x 10 = 240\n24 x 5 = 120\n240 + 120 = 360\nAnswer: 360 laddoos"},{"type":"Word Problem","text":"195 children are going on a school trip. Each bus holds 45 children. How many buses are needed?","answer":"5","unit":"buses","hint":"Divide 195 by 45. Think: 45 x 4 = 180, so one more bus is needed.","solution":"195 divided by 45\n45 x 4 = 180\n195 - 180 = 15 children left\nNeed 1 more bus\nAnswer: 5 buses"},{"type":"Word Problem","text":"Rishika's mother buys 3 sarees at Rs.245 each. How much does she spend?","answer":"735","unit":"Rs.","hint":"Multiply 245 x 3. Try 200 x 3, then 40 x 3, then 5 x 3.","solution":"245 x 3\n200 x 3 = 600\n40 x 3 = 120\n5 x 3 = 15\n600 + 120 + 15 = Rs.735\nAnswer: Rs.735"}],"hard":[{"type":"Multi-step","text":"A cricket stadium has 18 rows of seats. Each row has 124 seats. 1890 people are already seated. How many seats are empty?","answer":"342","unit":"seats","hint":null,"solution":"Total seats = 18 x 124\n18 x 100 = 1800\n18 x 24 = 432\nTotal = 2232\nEmpty = 2232 - 1890 = 342\nAnswer: 342 empty seats"},{"type":"Multi-step","text":"Rishika saves Rs.35 every week for 12 weeks. A book costs Rs.450 and a pen set costs Rs.95. How much short is she?","answer":"125","unit":"Rs.","hint":null,"solution":"Total saved = Rs.35 x 12 = Rs.420\nTotal cost = Rs.450 + Rs.95 = Rs.545\nShort = Rs.545 - Rs.420 = Rs.125\nAnswer: Rs.125 short"},{"type":"Multi-step","text":"A dabbawala delivers 36 tiffin boxes every day, 6 days a week. He works for 4 weeks. How many tiffin boxes does he deliver in total?","answer":"864","unit":"boxes","hint":null,"solution":"Per day = 36 boxes\nPer week = 36 x 6 = 216\n4 weeks = 216 x 4 = 864\nAnswer: 864 tiffin boxes"},{"type":"Multi-step","text":"A mango farmer picks 126 mangoes from each of his 8 trees. He packs them in boxes of 12. How many full boxes can he fill?","answer":"84","unit":"boxes","hint":null,"solution":"Total mangoes = 126 x 8 = 1008\nFull boxes = 1008 divided by 12 = 84\nAnswer: 84 full boxes"},{"type":"Multi-step","text":"A school canteen serves 245 children lunch every day at Rs.18 each. How much does the canteen collect in a 5-day week?","answer":"22050","unit":"Rs.","hint":null,"solution":"Per day = 245 x Rs.18\n200 x 18 = 3600\n45 x 18 = 810\nPer day = Rs.4410\nPer week = Rs.4410 x 5 = Rs.22050\nAnswer: Rs.22050"},{"type":"Multi-step","text":"Rishika's father drives 28km to work each day, 5 days a week for 48 weeks a year. How many km does he drive to work in a year?","answer":"6720","unit":"km","hint":null,"solution":"Per week = 28 x 5 = 140km\nPer year = 140 x 48\n140 x 40 = 5600\n140 x 8 = 1120\nTotal = 6720km\nAnswer: 6720km"},{"type":"Spot the Mistake","text":"Spot the mistake: Amit works out 36 x 24. He writes 36 x 20 = 620, 36 x 4 = 144, Total = 764. What is the correct answer?","answer":"864","unit":"","hint":null,"solution":"Amit's mistake: 36 x 20 = 720 (not 620)\nCorrect:\n36 x 20 = 720\n36 x 4 = 144\n720 + 144 = 864\nAnswer: 864"},{"type":"Multi-step","text":"A sweet shop has 480 laddoos. They make equal numbers of small boxes (8 each) and large boxes (12 each). How many of each type do they make?","answer":"24","unit":"of each","hint":null,"solution":"Each pair of boxes holds 8 + 12 = 20 laddoos\nNumber of pairs = 480 divided by 20 = 24\nAnswer: 24 small boxes and 24 large boxes"},{"type":"Multi-step","text":"Rishika reads 15 pages on weekdays and 25 pages on weekend days. How many pages does she read in 3 weeks?","answer":"375","unit":"pages","hint":null,"solution":"Weekday pages per week = 15 x 5 = 75\nWeekend pages per week = 25 x 2 = 50\nPer week = 75 + 50 = 125\n3 weeks = 125 x 3 = 375\nAnswer: 375 pages"},{"type":"Multi-step","text":"A factory makes 1248 bottles of mango juice per day. How many bottles in 6 days? If each crate holds 24 bottles, how many full crates?","answer":"312","unit":"crates","hint":null,"solution":"6 days = 1248 x 6 = 7488 bottles\nCrates = 7488 divided by 24 = 312\nAnswer: 312 full crates"}]},"fractions":{"easy":[{"type":"Word Problem","text":"Rishika cuts a chapati into 4 equal pieces and eats 1 piece. What fraction does she eat? Type the numerator only (for 1/4 type 1).","answer":"1","unit":"out of 4","hint":"She eats 1 piece out of 4 equal pieces.","solution":"Total pieces = 4\nPieces eaten = 1\nFraction eaten = 1/4\nAnswer: 1 (as in 1/4)"},{"type":"Word Problem","text":"Dadi makes 8 laddoos. Rishika eats 3. What fraction of the laddoos is left? Type the numerator only.","answer":"5","unit":"out of 8","hint":"Laddoos left = 8 - 3 = 5. Write as a fraction of 8.","solution":"Laddoos left = 8 - 3 = 5\nFraction left = 5/8\nAnswer: 5 (as in 5/8)"},{"type":"True or False","text":"True or False: 1/2 of 12 is 5.\n\nType 1 for True, 0 for False.","answer":"0","unit":"","hint":"To find 1/2 of 12, divide 12 by 2.","solution":"1/2 of 12 = 12 divided by 2 = 6\n6 is NOT 5\nAnswer: FALSE (type 0)"},{"type":"Word Problem","text":"A water bottle is 3/4 full. What fraction is empty? Type the numerator only (answer is ?/4).","answer":"1","unit":"out of 4","hint":"The whole bottle = 4/4. Subtract 3/4 from 4/4.","solution":"4/4 - 3/4 = 1/4\nAnswer: 1 (as in 1/4)"},{"type":"Spot the Mistake","text":"Spot the mistake: Priya says 2/4 and 1/2 are NOT equal. Is Priya right?\n\nType 1 for Yes (she is right), 0 for No (she is wrong).","answer":"0","unit":"","hint":"Divide top and bottom of 2/4 by 2. What do you get?","solution":"2/4 = 1/2 (divide top and bottom by 2)\nThey ARE equal\nPriya is WRONG\nAnswer: 0"},{"type":"Missing Number","text":"Fill in the missing number:\n1/2 = ?/8\n\nWhat number goes in place of the ?","answer":"4","unit":"","hint":"To go from 2 to 8 multiply by 4. Do the same to the top.","solution":"Bottom: 2 x 4 = 8\nTop: 1 x 4 = 4\n1/2 = 4/8\nAnswer: 4"},{"type":"Word Problem","text":"Rishika has a ribbon 10cm long. She uses 1/2 for a craft project. How many cm does she use?","answer":"5","unit":"cm","hint":"To find 1/2 of 10, divide 10 by 2.","solution":"1/2 of 10 = 10 divided by 2 = 5cm\nAnswer: 5cm"},{"type":"Word Problem","text":"A pizza is cut into 8 equal slices. Rishika eats 2 slices. What fraction does she eat? Type the numerator only.","answer":"2","unit":"out of 8","hint":"She eats 2 slices out of 8 total slices.","solution":"Fraction eaten = 2/8\nAnswer: 2 (as in 2/8)"},{"type":"True or False","text":"True or False: 3/6 is the same as 1/2.\n\nType 1 for True, 0 for False.","answer":"1","unit":"","hint":"Divide top and bottom of 3/6 by 3. What do you get?","solution":"3/6: divide top and bottom by 3\n3 divided by 3 = 1, 6 divided by 3 = 2\n3/6 = 1/2\nAnswer: TRUE (type 1)"},{"type":"Word Problem","text":"A mango is cut into 6 pieces. Rishika eats 4. What fraction is left? Type the numerator only.","answer":"2","unit":"out of 6","hint":"Pieces left = 6 - 4 = 2. Write as a fraction of 6.","solution":"Pieces left = 6 - 4 = 2\nFraction left = 2/6\nAnswer: 2 (as in 2/6)"}],"medium":[{"type":"Word Problem","text":"Rishika's mother makes 24 samosas. She gives 1/3 to neighbours and 1/4 to her sister. How many does she give away altogether?","answer":"14","unit":"samosas","hint":"Find 1/3 of 24, then 1/4 of 24, then add.","solution":"1/3 of 24 = 8\n1/4 of 24 = 6\nTotal given = 8 + 6 = 14\nAnswer: 14 samosas"},{"type":"Word Problem","text":"A ribbon is 36cm long. Rishika uses 2/3 of it for a craft project. How much ribbon is left?","answer":"12","unit":"cm","hint":"Find 2/3 of 36 first. Then subtract from 36.","solution":"1/3 of 36 = 12\n2/3 of 36 = 12 x 2 = 24cm used\nLeft = 36 - 24 = 12cm\nAnswer: 12cm"},{"type":"Spot the Mistake","text":"Spot the mistake: Rohan adds 1/3 + 1/4 and gets 2/7. What is the correct answer? Type the numerator only (answer is ?/12).","answer":"7","unit":"out of 12","hint":"Find a common denominator first. 3 and 4 both go into 12.","solution":"Common denominator = 12\n1/3 = 4/12\n1/4 = 3/12\n4/12 + 3/12 = 7/12\nRohan added top and bottom - wrong!\nAnswer: 7 (as in 7/12)"},{"type":"Word Problem","text":"A mango is cut into 8 slices. Rishika eats 3 and her brother eats 2. What fraction is left? Type the numerator only.","answer":"3","unit":"out of 8","hint":"Add the slices eaten, then subtract from 8.","solution":"Eaten = 3 + 2 = 5 slices\nLeft = 8 - 5 = 3 slices\nFraction left = 3/8\nAnswer: 3 (as in 3/8)"},{"type":"Word Problem","text":"A shopkeeper sells 6/8 of his bananas. Simplify this fraction. Type the numerator only (answer is ?/4).","answer":"3","unit":"out of 4","hint":"Divide top and bottom of 6/8 by 2.","solution":"6/8: divide top and bottom by 2\n6 divided by 2 = 3\n8 divided by 2 = 4\n6/8 = 3/4\nAnswer: 3 (as in 3/4)"},{"type":"Word Problem","text":"Rishika's dadi has Rs.48. She spends 3/4 of it on vegetables. How much does she spend?","answer":"36","unit":"Rs.","hint":"To find 3/4 of 48: divide by 4 first, then multiply by 3.","solution":"1/4 of 48 = 12\n3/4 of 48 = 12 x 3 = 36\nAnswer: Rs.36"},{"type":"Odd One Out","text":"Which fraction is NOT equivalent to 1/2?\n2/4, 3/6, 4/8, 3/9\n\nType the numerator of the odd one out.","answer":"3","unit":"out of 9","hint":"Check each fraction by simplifying. Which one does not equal 1/2?","solution":"2/4 = 1/2\n3/6 = 1/2\n4/8 = 1/2\n3/9 = 1/3 (NOT 1/2!)\nAnswer: 3 (as in 3/9)"},{"type":"Word Problem","text":"Rishika scores 18 out of 24 in a test. Simplify this fraction. Type the numerator only (answer is ?/4).","answer":"3","unit":"out of 4","hint":"What divides into both 18 and 24?","solution":"18/24: both divisible by 6\n18 divided by 6 = 3\n24 divided by 6 = 4\n18/24 = 3/4\nAnswer: 3 (as in 3/4)"},{"type":"True or False","text":"True or False: 3/4 is bigger than 2/3.\n\nType 1 for True, 0 for False.","answer":"1","unit":"","hint":"Make both fractions have the same denominator. Try 12.","solution":"Common denominator = 12\n3/4 = 9/12\n2/3 = 8/12\n9/12 is bigger than 8/12\nSo 3/4 IS bigger\nAnswer: TRUE (type 1)"},{"type":"Word Problem","text":"Rishika's class has 30 children. 2/5 of them walk to school. How many children walk?","answer":"12","unit":"children","hint":"To find 2/5 of 30: divide by 5 first, then multiply by 2.","solution":"1/5 of 30 = 6\n2/5 of 30 = 6 x 2 = 12\nAnswer: 12 children"}],"hard":[{"type":"Multi-step","text":"Rishika spends 1/3 of her pocket money on a notebook and 1/4 on a pen. She started with Rs.60. How much does she have left?","answer":"25","unit":"Rs.","hint":null,"solution":"1/3 of Rs.60 = Rs.20 (notebook)\n1/4 of Rs.60 = Rs.15 (pen)\nTotal spent = Rs.35\nLeft = Rs.60 - Rs.35 = Rs.25\nAnswer: Rs.25"},{"type":"Multi-step","text":"A recipe needs 2 and 3/4 cups of flour. Rishika wants to make 2 batches. How much flour does she need? Type the whole number part.","answer":"5","unit":"and 1/2 cups","hint":null,"solution":"2 batches = 2 x (2 and 3/4)\n= 2 x 11/4\n= 22/4\n= 5 and 2/4\n= 5 and 1/2 cups\nAnswer: 5 (and 1/2)"},{"type":"Multi-step","text":"Rishika's dadi has Rs.120. She spends 1/3 on vegetables, 1/4 on fruit and 1/6 on spices. How much does she have left?","answer":"30","unit":"Rs.","hint":null,"solution":"1/3 of 120 = Rs.40\n1/4 of 120 = Rs.30\n1/6 of 120 = Rs.20\nTotal spent = Rs.90\nLeft = Rs.120 - Rs.90 = Rs.30\nAnswer: Rs.30"},{"type":"Multi-step","text":"A cricket match lasts 3 and 1/2 hours. The lunch break is 3/4 of an hour. How long is actual playing time? Type the whole number part.","answer":"2","unit":"and 3/4 hours","hint":null,"solution":"Total = 3 and 1/2 hours = 7/2 hours\nLunch = 3/4 hour\nPlaying = 7/2 - 3/4 = 14/4 - 3/4 = 11/4\n= 2 and 3/4 hours\nAnswer: 2 (and 3/4)"},{"type":"Spot the Mistake","text":"Spot the mistake: Amit works out 2 and 1/2 + 1 and 3/4. He writes: 2+1=3, 1/2+3/4=4/6, answer is 3 and 4/6. What is the correct answer? Type the whole number part.","answer":"4","unit":"and 1/4","hint":null,"solution":"Amit's mistake: 1/2 + 3/4 is NOT 4/6\nCorrect: 1/2 = 2/4\n2/4 + 3/4 = 5/4 = 1 and 1/4\nWhole: 2 + 1 + 1 = 4\nAnswer: 4 and 1/4"},{"type":"Multi-step","text":"A sweet shop makes 240 laddoos. They give 1/4 to a temple and 1/3 to a school. How many do they sell?","answer":"100","unit":"laddoos","hint":null,"solution":"1/4 of 240 = 60 (temple)\n1/3 of 240 = 80 (school)\nGiven away = 60 + 80 = 140\nSold = 240 - 140 = 100\nAnswer: 100 laddoos"},{"type":"Multi-step","text":"Rishika reads 3/5 of her book on Saturday and 1/4 on Sunday. What fraction has she NOT yet read? Type the numerator only (answer is ?/20).","answer":"3","unit":"out of 20","hint":null,"solution":"Common denominator = 20\n3/5 = 12/20\n1/4 = 5/20\nRead = 17/20\nNot read = 3/20\nAnswer: 3 (as in 3/20)"},{"type":"Multi-step","text":"Rishika's school has 360 pupils. 5/9 are girls. How many boys are there?","answer":"160","unit":"boys","hint":null,"solution":"1/9 of 360 = 40\n5/9 of 360 = 200 girls\nBoys = 360 - 200 = 160\nAnswer: 160 boys"},{"type":"Multi-step","text":"A mango farmer picks 180 mangoes. He sells 2/5 on Monday and 1/3 on Tuesday. How many are left?","answer":"48","unit":"mangoes","hint":null,"solution":"2/5 of 180 = 72 (Monday)\n1/3 of 180 = 60 (Tuesday)\nSold = 132\nLeft = 180 - 132 = 48\nAnswer: 48 mangoes"},{"type":"Odd One Out","text":"Which is the odd one out?\n1 and 1/2, 5/4, 7/4, 9/6\n\nType the numerator of the odd one out as an improper fraction.","answer":"5","unit":"out of 4","hint":null,"solution":"1 and 1/2 = 1.5\n5/4 = 1.25\n7/4 = 1.75\n9/6 = 1.5\n5/4 is the only one NOT equal to 1.5\nAnswer: 5 (as in 5/4)"}]},"decimals":{"easy":[{"type":"Word Problem","text":"Rishika buys a pencil for Rs.4.50 and an eraser for Rs.2.25. How much does she spend altogether?","answer":"6.75","unit":"Rs.","hint":"Line up the decimal points and add: 4.50 + 2.25","solution":"  4.50\n+ 2.25\n------\n  6.75\nAnswer: Rs.6.75"},{"type":"Place Value","text":"A mango weighs 0.75kg.\n\nWhat digit is in the TENTHS place?","answer":"7","unit":"","hint":"In 0.75 the first digit after the decimal point is the tenths place.","solution":"0.75\n0 = units\n7 = tenths\n5 = hundredths\nAnswer: 7"},{"type":"True or False","text":"True or False: 0.5 is the same as 1/2.\n\nType 1 for True, 0 for False.","answer":"1","unit":"","hint":"0.5 means 5 tenths = 5/10. Simplify 5/10.","solution":"0.5 = 5/10 = 1/2\nAnswer: TRUE (type 1)"},{"type":"Spot the Mistake","text":"Spot the mistake: Priya says 0.30 is bigger than 0.4 because 30 is bigger than 4. Is Priya right? Type 1 for Yes, 0 for No.","answer":"0","unit":"","hint":"Compare the tenths digit first. 0.30 has 3 tenths. 0.4 has 4 tenths.","solution":"0.30 = 3 tenths\n0.4 = 4 tenths\n4 tenths is bigger\nPriya is WRONG\nAnswer: 0"},{"type":"Missing Number","text":"Fill in the missing number:\n0.6 + ? = 1.0","answer":"0.4","unit":"","hint":"1.0 - 0.6 = ?","solution":"1.0 - 0.6 = 0.4\nCheck: 0.6 + 0.4 = 1.0\nAnswer: 0.4"},{"type":"Word Problem","text":"Rishika has Rs.10. She spends Rs.3.75 on a snack. How much does she have left?","answer":"6.25","unit":"Rs.","hint":"Subtract: 10.00 - 3.75","solution":"  10.00\n-  3.75\n-------\n   6.25\nAnswer: Rs.6.25"},{"type":"Ordering","text":"Arrange from smallest to largest:\n0.3, 1.2, 0.75, 0.09\n\nType the SMALLEST number.","answer":"0.09","unit":"","hint":"Look at the tenths digit first. Which number has the fewest tenths?","solution":"Order: 0.09, 0.3, 0.75, 1.2\nSmallest = 0.09\nAnswer: 0.09"},{"type":"True or False","text":"True or False: 0.30 and 0.3 are the same value.\n\nType 1 for True, 0 for False.","answer":"1","unit":"","hint":"0.30 means 3 tenths and 0 hundredths. 0.3 means 3 tenths.","solution":"0.30 = 0.3\nThe zero does not change the value\nAnswer: TRUE (type 1)"},{"type":"Word Problem","text":"A water bottle holds 1.5 litres. Rishika drinks 0.75 litres. How much is left?","answer":"0.75","unit":"litres","hint":"Subtract: 1.50 - 0.75","solution":"  1.50\n- 0.75\n------\n  0.75\nAnswer: 0.75 litres"},{"type":"Word Problem","text":"Rishika runs 2.4km in the morning and 1.35km in the evening. How far does she run altogether?","answer":"3.75","unit":"km","hint":"Line up the decimal points: 2.40 + 1.35","solution":"  2.40\n+ 1.35\n------\n  3.75\nAnswer: 3.75km"}],"medium":[{"type":"Word Problem","text":"Rishika has Rs.50. She buys a notebook for Rs.12.75 and a pen for Rs.8.50. How much change does she get?","answer":"28.75","unit":"Rs.","hint":"Add the costs first, then subtract from Rs.50.","solution":"Cost = Rs.12.75 + Rs.8.50 = Rs.21.25\nChange = Rs.50.00 - Rs.21.25 = Rs.28.75\nAnswer: Rs.28.75"},{"type":"Word Problem","text":"A vegetable vendor sells tomatoes at Rs.18.50 per kg. Rishika's mother buys 2kg. How much does she pay?","answer":"37","unit":"Rs.","hint":"Multiply Rs.18.50 by 2.","solution":"Rs.18.50 x 2 = Rs.37\nAnswer: Rs.37"},{"type":"Word Problem","text":"A shopkeeper has 3.6kg of rice. He orders 10 times as much for Diwali. How many kg does he order?","answer":"36","unit":"kg","hint":"Multiplying by 10 moves all digits one place to the left.","solution":"3.6 x 10 = 36\nAnswer: 36kg"},{"type":"Spot the Mistake","text":"Spot the mistake: Rohan works out 4.5 - 1.8 and gets 3.3. What is the correct answer?","answer":"2.7","unit":"","hint":"Line up the decimal points carefully: 4.5 - 1.8","solution":"  4.5\n- 1.8\n-----\n  2.7\nRohan got 3.3 - wrong!\nAnswer: 2.7"},{"type":"Word Problem","text":"A cricket player scores 14.6 runs in the first match and 23.75 in the second. What is his total?","answer":"38.35","unit":"runs","hint":"Line up the decimal points: 14.60 + 23.75","solution":"  14.60\n+ 23.75\n-------\n  38.35\nAnswer: 38.35 runs"},{"type":"Word Problem","text":"Round 3.76 to the nearest tenth.","answer":"3.8","unit":"","hint":"Look at the hundredths digit (6). 5 or more means round UP.","solution":"3.76: hundredths digit is 6\n6 is 5 or more so round UP\n7 becomes 8\nAnswer: 3.8"},{"type":"Odd One Out","text":"Which is the odd one out?\n0.25, 1/4, 0.50, 25/100\n\nType the one that is different as a decimal.","answer":"0.5","unit":"","hint":"Convert all to decimals. Which one is different?","solution":"0.25 = 0.25\n1/4 = 0.25\n0.50 = 0.5\n25/100 = 0.25\n0.50 is the odd one out\nAnswer: 0.5"},{"type":"Word Problem","text":"A ribbon costs Rs.12.40 per metre. Rishika buys 3 metres. How much does she pay?","answer":"37.2","unit":"Rs.","hint":"Multiply Rs.12.40 by 3.","solution":"Rs.12.40 x 3\n12 x 3 = 36\n0.40 x 3 = 1.20\n36 + 1.20 = Rs.37.20\nAnswer: Rs.37.20"},{"type":"Word Problem","text":"A shopkeeper buys mangoes for Rs.45.60 per kg and sells them for Rs.62.00 per kg. What is his profit per kg?","answer":"16.4","unit":"Rs.","hint":"Profit = selling price minus buying price.","solution":"Profit = Rs.62.00 - Rs.45.60 = Rs.16.40\nAnswer: Rs.16.40"},{"type":"Word Problem","text":"Rishika divides 8.4 by 10. What is her answer?","answer":"0.84","unit":"","hint":"When dividing by 10, digits move one place to the RIGHT.","solution":"8.4 divided by 10 = 0.84\nDigits move one place right\nAnswer: 0.84"}],"hard":[{"type":"Multi-step","text":"Rishika's mother buys 2kg of flour at Rs.45.50 per kg and 1.5kg of sugar at Rs.38 per kg. She pays with Rs.200. What change does she get?","answer":"52","unit":"Rs.","hint":null,"solution":"Flour: 2 x Rs.45.50 = Rs.91\nSugar: 1.5 x Rs.38 = Rs.57\nTotal = Rs.148\nChange = Rs.200 - Rs.148 = Rs.52\nAnswer: Rs.52"},{"type":"Multi-step","text":"Rishika's mother buys 1.5kg of paneer at Rs.280 per kg and 0.5kg of butter at Rs.420 per kg. She pays with Rs.1000. What change does she get?","answer":"370","unit":"Rs.","hint":null,"solution":"Paneer: 1.5 x Rs.280 = Rs.420\nButter: 0.5 x Rs.420 = Rs.210\nTotal = Rs.630\nChange = Rs.1000 - Rs.630 = Rs.370\nAnswer: Rs.370"},{"type":"Multi-step","text":"Rishika saves Rs.12.50 every week for 8 weeks. She wants a book costing Rs.115.75. How much more does she need?","answer":"15.75","unit":"Rs.","hint":null,"solution":"Saved = Rs.12.50 x 8 = Rs.100\nBook costs Rs.115.75\nStill needs = Rs.115.75 - Rs.100 = Rs.15.75\nAnswer: Rs.15.75"},{"type":"Spot the Mistake","text":"Spot the mistake: Amit multiplies 4.25 by 100 and writes 42.5. What is the correct answer?","answer":"425","unit":"","hint":null,"solution":"Multiplying by 100 moves digits TWO places left\n4.25 x 100 = 425\nAmit only moved ONE place\nAnswer: 425"},{"type":"Multi-step","text":"A runner completes 4 laps of a track. Each lap is 0.4km. The total race is 2km. How much further does she still need to run?","answer":"0.4","unit":"km","hint":null,"solution":"Distance run = 4 x 0.4 = 1.6km\nRemaining = 2 - 1.6 = 0.4km\nAnswer: 0.4km"},{"type":"Multi-step","text":"A school trip costs Rs.125.50 per child. There are 20 children going. What is the total cost?","answer":"2510","unit":"Rs.","hint":null,"solution":"Rs.125.50 x 20\n= Rs.125 x 20 + Rs.0.50 x 20\n= Rs.2500 + Rs.10\n= Rs.2510\nAnswer: Rs.2510"},{"type":"Multi-step","text":"Rishika's father drives 4.8km to the station every day for 5 days. How many km does he drive in total?","answer":"24","unit":"km","hint":null,"solution":"4.8 x 5\n= 4 x 5 + 0.8 x 5\n= 20 + 4\n= 24km\nAnswer: 24km"},{"type":"Multi-step","text":"Rishika buys 2.5 metres of cloth at Rs.85.60 per metre. She pays with Rs.250. What change does she receive?","answer":"36","unit":"Rs.","hint":null,"solution":"Cost = 2.5 x Rs.85.60\n= 2 x 85.60 + 0.5 x 85.60\n= 171.20 + 42.80\n= Rs.214\nChange = Rs.250 - Rs.214 = Rs.36\nAnswer: Rs.36"},{"type":"Spot the Mistake","text":"Spot the mistake: Priya adds 1.4 + 0.86 and gets 1.46. What is the correct answer?","answer":"2.26","unit":"","hint":null,"solution":"Priya did not line up decimal points\nCorrect:\n  1.40\n+ 0.86\n------\n  2.26\nAnswer: 2.26"},{"type":"Multi-step","text":"A mango vendor has 12.5kg of mangoes. He sells 4.75kg in the morning and 3.8kg in the afternoon. How much is left?","answer":"3.95","unit":"kg","hint":null,"solution":"Sold = 4.75 + 3.80 = 8.55kg\nLeft = 12.50 - 8.55 = 3.95kg\nAnswer: 3.95kg"}]},"negative":{"easy":[{"type":"Word Problem","text":"In Shimla the temperature is -3 degrees C. In Mumbai it is 22 degrees C. Which city is colder? Type 1 for Shimla, 2 for Mumbai.","answer":"1","unit":"","hint":"Negative temperatures are below zero. The lower the number the colder.","solution":"-3 is below zero\n22 is above zero\nShimla is much colder\nAnswer: 1 (Shimla)"},{"type":"True or False","text":"True or False: -6 is bigger than -2.\n\nType 1 for True, 0 for False.","answer":"0","unit":"","hint":"On a number line -6 is to the LEFT of -2. Numbers to the left are smaller.","solution":"-6 is to the left of -2 on the number line\nSo -6 is SMALLER than -2\nAnswer: FALSE (type 0)"},{"type":"Missing Number","text":"What comes next in this sequence?\n-8, -6, -4, ___, ___\n\nType the FIRST missing number.","answer":"-2","unit":"","hint":"The sequence goes up by 2 each time. What is -4 + 2?","solution":"Pattern: add 2 each time\n-8, -6, -4, -2, 0\nFirst missing number = -2\nAnswer: -2"},{"type":"Ordering","text":"Arrange smallest to largest:\n-5, 2, -1, 0, 4\n\nType the SMALLEST number.","answer":"-5","unit":"","hint":"The most negative number is the smallest.","solution":"Order: -5, -1, 0, 2, 4\nSmallest = -5\nAnswer: -5"},{"type":"Missing Number","text":"Fill in the missing number:\n-2, ___, 0, 1, 2","answer":"-1","unit":"","hint":"Count up by 1 each time. What comes between -2 and 0?","solution":"Counting up by 1:\n-2, -1, 0, 1, 2\nMissing number = -1\nAnswer: -1"},{"type":"Word Problem","text":"The temperature in Delhi is -4 degrees C. Overnight it drops by 3 more degrees. What is the new temperature?","answer":"-7","unit":"degrees C","hint":"Starting at -4 and dropping means going further below zero. -4 - 3 = ?","solution":"Start: -4\nDrop by 3: -4 - 3 = -7\nAnswer: -7 degrees C"},{"type":"Spot the Mistake","text":"Spot the mistake: Priya says -3 is bigger than -1 because 3 is bigger than 1. Is Priya right? Type 1 for Yes, 0 for No.","answer":"0","unit":"","hint":"Draw a number line. Is -3 to the left or right of -1?","solution":"-3 is to the LEFT of -1\nNumbers to the left are smaller\nSo -3 is smaller than -1\nPriya is WRONG\nAnswer: 0"},{"type":"True or False","text":"True or False: -10 is colder than -4 degrees C.\n\nType 1 for True, 0 for False.","answer":"1","unit":"","hint":"More negative means colder. Which is further below zero?","solution":"-10 is further below zero than -4\nSo -10 IS colder\nAnswer: TRUE (type 1)"},{"type":"Word Problem","text":"A lift is at floor -2 (basement). It goes up 5 floors. What floor does it reach?","answer":"3","unit":"","hint":"Start at -2 and count up 5 floors: -2, -1, 0, 1, 2, 3","solution":"Start: floor -2\nGo up 5: -2 + 5 = 3\nAnswer: floor 3"},{"type":"Missing Number","text":"What is the missing number?\n___ + 6 = 2","answer":"-4","unit":"","hint":"Work backwards: 2 - 6 = ? What number plus 6 gives 2?","solution":"? + 6 = 2\n? = 2 - 6 = -4\nCheck: -4 + 6 = 2\nAnswer: -4"}],"medium":[{"type":"Word Problem","text":"The temperature in Delhi is -2 degrees C in the morning. By afternoon it rises by 9 degrees. What is the afternoon temperature?","answer":"7","unit":"degrees C","hint":"Start at -2 and add 9.","solution":"Start: -2\nRise by 9: -2 + 9 = 7\nAnswer: 7 degrees C"},{"type":"Word Problem","text":"Rishika's uncle is a diver. He is at -15 metres below sea level. He swims up 8 metres. What is his new position?","answer":"-7","unit":"metres","hint":"Start at -15 and add 8. Moving up means adding.","solution":"Start: -15\nSwim up 8: -15 + 8 = -7 metres\nAnswer: -7 metres"},{"type":"Spot the Mistake","text":"Spot the mistake: Rohan says the difference between -3 and 5 is 2. What is the correct difference?","answer":"8","unit":"","hint":"Count from -3 to 5: from -3 to 0 is 3 steps, from 0 to 5 is 5 steps.","solution":"From -3 to 0 = 3 steps\nFrom 0 to 5 = 5 steps\nTotal difference = 3 + 5 = 8\nRowan got 2 - wrong!\nAnswer: 8"},{"type":"Word Problem","text":"A submarine is at -40 metres. It rises 25 metres then dives 10 metres. Where is it now?","answer":"-25","unit":"metres","hint":"Step 1: -40 + 25. Step 2: subtract 10.","solution":"Start: -40\nRise 25: -40 + 25 = -15\nDive 10: -15 - 10 = -25\nAnswer: -25 metres"},{"type":"True or False","text":"True or False: Starting at -4 and adding 6 gives the same answer as starting at 6 and subtracting 4.\n\nType 1 for True, 0 for False.","answer":"1","unit":"","hint":"Work out both: -4 + 6 = ? and 6 - 4 = ?","solution":"-4 + 6 = 2\n6 - 4 = 2\nBoth give 2!\nAnswer: TRUE (type 1)"},{"type":"Ordering","text":"Arrange smallest to largest:\n-12, -3, -8, 0, -1, 5\n\nType the SECOND smallest number.","answer":"-8","unit":"","hint":"Order all six numbers first. The most negative is smallest.","solution":"Order: -12, -8, -3, -1, 0, 5\nSecond smallest = -8\nAnswer: -8"},{"type":"Word Problem","text":"In Leh the highest temperature last week was 4 degrees C and the lowest was -11 degrees C. What was the difference?","answer":"15","unit":"degrees C","hint":"Count from -11 up to 4: -11 to 0 is 11, then 0 to 4 is 4 more.","solution":"From -11 to 0 = 11 steps\nFrom 0 to 4 = 4 steps\nDifference = 11 + 4 = 15\nAnswer: 15 degrees C"},{"type":"Word Problem","text":"A lift starts at floor -3. It goes up 7 floors then down 2 floors. What floor does it end on?","answer":"2","unit":"","hint":"Step 1: -3 + 7. Step 2: subtract 2.","solution":"Start: -3\nUp 7: -3 + 7 = 4\nDown 2: 4 - 2 = 2\nAnswer: floor 2"},{"type":"Missing Number","text":"Fill in the missing number:\n-5 + ___ = 3","answer":"8","unit":"","hint":"Count from -5 to 3 on a number line.","solution":"From -5 to 0 = 5 steps\nFrom 0 to 3 = 3 steps\nTotal = 5 + 3 = 8\n-5 + 8 = 3\nAnswer: 8"},{"type":"Word Problem","text":"The temperature drops from 3 degrees C to -4 degrees C overnight. By how many degrees did it drop?","answer":"7","unit":"degrees C","hint":"Count from -4 up to 3, or use: 3 - (-4).","solution":"Drop = 3 - (-4) = 3 + 4 = 7\nAnswer: 7 degrees C"}],"hard":[{"type":"Multi-step","text":"The temperature in Leh is -8 degrees C at midnight. By 6am it drops another 5 degrees. By noon it rises 18 degrees from its lowest point. What is the temperature at noon?","answer":"5","unit":"degrees C","hint":null,"solution":"Midnight: -8\nBy 6am: -8 - 5 = -13 (lowest point)\nBy noon: -13 + 18 = 5\nAnswer: 5 degrees C"},{"type":"Multi-step","text":"Rishika's father has Rs.-450 in his bank account (overdrawn). He deposits Rs.1200 then withdraws Rs.380. What is his final balance?","answer":"370","unit":"Rs.","hint":null,"solution":"Start: -450\nDeposit 1200: -450 + 1200 = 750\nWithdraw 380: 750 - 380 = 370\nAnswer: Rs.370"},{"type":"Multi-step","text":"A lift starts at floor -2. It goes up 6 floors, then down 4 floors, then up 3 floors. What floor does it end on?","answer":"3","unit":"","hint":null,"solution":"Start: -2\nUp 6: -2 + 6 = 4\nDown 4: 4 - 4 = 0\nUp 3: 0 + 3 = 3\nAnswer: floor 3"},{"type":"Spot the Mistake","text":"Spot the mistake: Amit works out -5 - (-3) = -8. What is the correct answer?","answer":"-2","unit":"","hint":null,"solution":"Subtracting a negative = adding a positive\n-5 - (-3) = -5 + 3 = -2\nAmit forgot the double negative rule\nAnswer: -2"},{"type":"Multi-step","text":"Temperatures in Shimla for a week: -3, -5, -1, 2, -4, 0, 1. What is the difference between the highest and lowest temperature?","answer":"7","unit":"degrees C","hint":null,"solution":"Highest = 2\nLowest = -5\nDifference = 2 - (-5) = 2 + 5 = 7\nAnswer: 7 degrees C"},{"type":"Multi-step","text":"Rishika's father has Rs.-800 in his account. He needs at least Rs.500. How much does he need to deposit?","answer":"1300","unit":"Rs.","hint":null,"solution":"Current: -800\nTarget: 500\nNeeded = 500 - (-800) = 500 + 800 = 1300\nAnswer: Rs.1300"},{"type":"Multi-step","text":"A deep sea fish is at -120 metres. A shark is at -45 metres. How much higher is the shark than the fish?","answer":"75","unit":"metres","hint":null,"solution":"Difference = -45 - (-120) = -45 + 120 = 75\nAnswer: 75 metres higher"},{"type":"Multi-step","text":"The temperature drops 3 degrees C every hour from midnight. At midnight it is 2 degrees C. What is the temperature at 4am?","answer":"-10","unit":"degrees C","hint":null,"solution":"Drop over 4 hours = 3 x 4 = 12 degrees\n2 - 12 = -10\nAnswer: -10 degrees C"},{"type":"Spot the Mistake","text":"Spot the mistake: Priya says the difference between -8 and -3 is 11. What is the correct difference?","answer":"5","unit":"","hint":null,"solution":"Difference = -3 - (-8) = -3 + 8 = 5\nOR count from -8 to -3 = 5 steps\nPriya added instead of finding the gap\nAnswer: 5"},{"type":"Multi-step","text":"Rishika records temperatures for 3 days: -4, 3, -1 degrees C. What is the total of all three temperatures?","answer":"-2","unit":"degrees C","hint":null,"solution":"Total = -4 + 3 + (-1)\n= -4 + 3 - 1\n= -2\nAnswer: -2 degrees C"}]},"rounding":{"easy":[{"type":"Word Problem","text":"A vegetable vendor sells 347 onions in a day. Round this to the nearest hundred.","answer":"300","unit":"","hint":"Look at the tens digit (4). Less than 5 means round DOWN.","solution":"347: tens digit is 4\n4 is less than 5 so round DOWN\nAnswer: 300"},{"type":"Word Problem","text":"Rishika's school has 1463 pupils. Round this to the nearest thousand.","answer":"1000","unit":"","hint":"Look at the hundreds digit (4). Less than 5 means round DOWN.","solution":"1463: hundreds digit is 4\n4 is less than 5 so round DOWN\nAnswer: 1000"},{"type":"True or False","text":"True or False: 65 rounded to the nearest 10 is 60.\n\nType 1 for True, 0 for False.","answer":"0","unit":"","hint":"Look at the units digit (5). The rule is: 5 or more means round UP.","solution":"65: units digit is 5\n5 or more means round UP\n65 rounds UP to 70 not 60\nAnswer: FALSE (type 0)"},{"type":"Spot the Mistake","text":"Spot the mistake: Priya says 450 rounded to the nearest hundred is 400. What is the correct answer?","answer":"500","unit":"","hint":"Look at the tens digit of 450. It is 5. The rule for 5 is round UP.","solution":"450: tens digit is 5\n5 or more means round UP\n450 rounds UP to 500\nAnswer: 500"},{"type":"Multiple Choice","text":"782 rounded to the nearest 10 is:\nA) 780   B) 790   C) 800\n\nType the correct answer.","answer":"780","unit":"","hint":"Look at the units digit of 782. Is it 5 or more?","solution":"782: units digit is 2\n2 is less than 5 so round DOWN\nAnswer: 780"},{"type":"Word Problem","text":"A cricket stadium holds 28456 people. Round this to the nearest thousand.","answer":"28000","unit":"","hint":"Look at the hundreds digit (4). Less than 5 means round down.","solution":"28456: hundreds digit is 4\n4 is less than 5 so round DOWN\nAnswer: 28000"},{"type":"Word Problem","text":"Round 3.76 to the nearest whole number.","answer":"4","unit":"","hint":"Look at the tenths digit (7). 5 or more means round UP.","solution":"3.76: tenths digit is 7\n7 is 5 or more so round UP\nAnswer: 4"},{"type":"True or False","text":"True or False: 3500 rounded to the nearest thousand is 4000.\n\nType 1 for True, 0 for False.","answer":"1","unit":"","hint":"Look at the hundreds digit of 3500. It is 5. Round UP.","solution":"3500: hundreds digit is 5\n5 or more means round UP\nAnswer: TRUE (type 1)"},{"type":"Word Problem","text":"Round 847 to the nearest ten.","answer":"850","unit":"","hint":"Look at the units digit (7). 5 or more means round UP.","solution":"847: units digit is 7\n7 is 5 or more so round UP\nAnswer: 850"},{"type":"Spot the Mistake","text":"Spot the mistake: Sam says 75 rounded to the nearest 10 is 70. What is the correct answer?","answer":"80","unit":"","hint":"Units digit of 75 is 5. The rule is 5 or more means round UP.","solution":"75: units digit is 5\n5 or more means round UP\n75 rounds UP to 80\nAnswer: 80"}],"medium":[{"type":"Word Problem","text":"Rishika buys mangoes for Rs.47.60 per kg. Round this to the nearest rupee.","answer":"48","unit":"Rs.","hint":"Look at the tenths digit (6). 5 or more means round UP.","solution":"47.60: tenths digit is 6\n6 is 5 or more so round UP\nAnswer: Rs.48"},{"type":"Word Problem","text":"A train journey is 2847km. Round to the nearest hundred. Another train travels 1523km. Estimate the total.","answer":"4300","unit":"km","hint":"Round each distance first, then add.","solution":"2847 rounds to 2800 (tens digit 4)\n1523 rounds to 1500 (tens digit 2)\nEstimate = 2800 + 1500 = 4300\nAnswer: 4300km"},{"type":"Spot the Mistake","text":"Spot the mistake: Rohan rounds 4.75 to the nearest tenth and gets 4.7. What is the correct answer?","answer":"4.8","unit":"","hint":"Look at the hundredths digit of 4.75. It is 5. Round UP.","solution":"4.75: hundredths digit is 5\n5 or more means round UP the tenths\n7 rounds UP to 8\nAnswer: 4.8"},{"type":"Odd One Out","text":"Which rounds to a DIFFERENT hundred?\n349, 351, 350, 355\n\nType the odd one out.","answer":"349","unit":"","hint":"Round each to the nearest hundred. Which one rounds differently?","solution":"349: tens digit 4, rounds DOWN to 300\n351: tens digit 5, rounds UP to 400\n350: tens digit 5, rounds UP to 400\n355: tens digit 5, rounds UP to 400\n349 is the odd one out\nAnswer: 349"},{"type":"Word Problem","text":"A shopkeeper sells 48 boxes of mithai at Rs.95 each. Estimate the total by rounding both numbers to the nearest 10.","answer":"5000","unit":"Rs.","hint":"Round 48 to nearest 10, round 95 to nearest 10, then multiply.","solution":"48 rounds to 50\n95 rounds to 100\nEstimate = 50 x 100 = 5000\nAnswer: Rs.5000"},{"type":"True or False","text":"True or False: Rounding 3.45 to the nearest tenth gives 3.5.\n\nType 1 for True, 0 for False.","answer":"1","unit":"","hint":"Look at the hundredths digit of 3.45. It is 5. Round UP.","solution":"3.45: hundredths digit is 5\n5 or more means round UP\n4 rounds UP to 5\nAnswer: TRUE (type 1)"},{"type":"Word Problem","text":"Rishika's mother spends Rs.487 on vegetables and Rs.1239 on groceries. Estimate the total by rounding each to the nearest hundred.","answer":"1700","unit":"Rs.","hint":"Round each amount separately then add.","solution":"487 rounds to 500 (tens digit 8)\n1239 rounds to 1200 (tens digit 3)\nEstimate = 500 + 1200 = 1700\nAnswer: Rs.1700"},{"type":"Word Problem","text":"Round 6.38 to the nearest tenth.","answer":"6.4","unit":"","hint":"Look at the hundredths digit (8). 5 or more means round UP.","solution":"6.38: hundredths digit is 8\n8 is 5 or more so round UP\nAnswer: 6.4"},{"type":"Word Problem","text":"A factory produces 8764 bottles of mango juice per day. Round to the nearest thousand.","answer":"9000","unit":"","hint":"Look at the hundreds digit (7). 5 or more means round UP.","solution":"8764: hundreds digit is 7\n7 is 5 or more so round UP\nAnswer: 9000"},{"type":"Spot the Mistake","text":"Spot the mistake: Priya rounds 2450 to the nearest thousand and gets 3000. What is the correct answer?","answer":"2000","unit":"","hint":"Look at the hundreds digit of 2450. It is 4. Less than 5 means round DOWN.","solution":"2450: hundreds digit is 4\n4 is less than 5 so round DOWN\nAnswer: 2000"}],"hard":[{"type":"Multi-step","text":"Rishika's mother spends Rs.487, Rs.1239 and Rs.356. Estimate the total by rounding each to the nearest hundred. Then find the exact total.","answer":"2082","unit":"Rs.","hint":null,"solution":"Round: 487=500, 1239=1200, 356=400\nEstimate = 2100\nExact = 487 + 1239 + 356 = 2082\nAnswer: Rs.2082"},{"type":"Multi-step","text":"Rishika saves Rs.285 per month. Estimate how much she saves in a year by rounding to the nearest hundred. Then calculate exactly.","answer":"3420","unit":"Rs.","hint":null,"solution":"285 rounds to 300\nEstimate = 300 x 12 = 3600\nExact = 285 x 12 = 3420\nEstimate was an OVERESTIMATE\nAnswer: Rs.3420"},{"type":"Spot the Mistake","text":"Spot the mistake: Amit estimates 52 x 38 by rounding to 50 x 40 = 2000. He says the real answer must be exactly 2000. What is the actual answer to 52 x 38?","answer":"1976","unit":"","hint":null,"solution":"52 x 38:\n50 x 38 = 1900\n2 x 38 = 76\nTotal = 1976\nAmit's mistake: estimates are not exact!\nAnswer: 1976"},{"type":"Multi-step","text":"A mango farmer harvests 4847 mangoes from one orchard and 3156 from another. Estimate to the nearest thousand then find the exact total.","answer":"8003","unit":"mangoes","hint":null,"solution":"Estimate: 4847=5000, 3156=3000\nEstimate total = 8000\nExact = 4847 + 3156 = 8003\nAnswer: 8003"},{"type":"Multi-step","text":"A school trip costs Rs.285 per child for 42 children. Estimate by rounding both numbers then calculate exactly.","answer":"11970","unit":"Rs.","hint":null,"solution":"Estimate: 285=300, 42=40\n300 x 40 = 12000\nExact: 285 x 42 = 11970\nAnswer: Rs.11970"},{"type":"Multi-step","text":"Rishika rounds 3.74 to the nearest tenth then rounds that answer to the nearest whole number. What does she get?","answer":"4","unit":"","hint":null,"solution":"3.74 to nearest tenth = 3.7 (hundredths digit 4)\n3.7 to nearest whole = 4 (tenths digit 7)\nAnswer: 4"},{"type":"Multi-step","text":"A rickshaw driver earns Rs.1847 in January and Rs.2356 in February. Round each to the nearest hundred and estimate his total. What is the exact total?","answer":"4203","unit":"Rs.","hint":null,"solution":"January: 1847 rounds to 1800\nFebruary: 2356 rounds to 2400\nEstimate = 4200\nExact = 1847 + 2356 = 4203\nAnswer: Rs.4203"},{"type":"Multi-step","text":"Rishika's school has 1847 pupils. One newspaper rounds to the nearest hundred, another to the nearest thousand. What is the difference between the two rounded numbers?","answer":"200","unit":"","hint":null,"solution":"Nearest hundred: 1847 rounds to 1800\nNearest thousand: 1847 rounds to 2000\nDifference = 2000 - 1800 = 200\nAnswer: 200"},{"type":"Spot the Mistake","text":"Spot the mistake: Rohan says 6500 rounded to the nearest thousand is 6000 because you always round down when the digit is 5. What is the correct answer?","answer":"7000","unit":"","hint":null,"solution":"6500: hundreds digit is 5\nRule: 5 or MORE means round UP\n6500 rounds UP to 7000\nRowan got the rule wrong!\nAnswer: 7000"},{"type":"Multi-step","text":"A factory makes 3647 toys per day for 6 days. Estimate the total by rounding to the nearest thousand first. Then find the exact total.","answer":"21882","unit":"toys","hint":null,"solution":"Estimate: 3647 rounds to 4000\n4000 x 6 = 24000\nExact: 3647 x 6 = 21882\nAnswer: 21882"}]},"geometry":{"easy":[{"type":"Word Problem","text":"Rishika wants to put a border around her drawing. The drawing is 8cm long and 5cm wide. How much border does she need?","answer":"26","unit":"cm","hint":"Perimeter = add all four sides. Rectangles have two long and two short sides.","solution":"Perimeter = 2 x 8 + 2 x 5\n= 16 + 10\n= 26cm\nAnswer: 26cm"},{"type":"Word Problem","text":"A square classroom tile is 4cm on each side. What is its area?","answer":"16","unit":"sq cm","hint":"Area of a square = side x side.","solution":"Area = 4 x 4 = 16 sq cm\nAnswer: 16 sq cm"},{"type":"True or False","text":"True or False: The perimeter of a square with sides of 6cm is 24cm.\n\nType 1 for True, 0 for False.","answer":"1","unit":"","hint":"A square has 4 equal sides. Add all four: 6+6+6+6.","solution":"Perimeter = 4 x 6 = 24cm\nAnswer: TRUE (type 1)"},{"type":"Spot the Mistake","text":"Spot the mistake: Priya says the area of a 5cm x 3cm rectangle is 16 sq cm. What is the correct area?","answer":"15","unit":"sq cm","hint":"Area = length x width. Priya found the perimeter by mistake!","solution":"Area = 5 x 3 = 15 sq cm\nPriya got 16 which is the perimeter (5+3+5+3)\nAnswer: 15 sq cm"},{"type":"Missing Number","text":"A rectangle has a perimeter of 20cm. Two sides are 6cm each. What is the length of each of the other two sides?","answer":"4","unit":"cm","hint":"The two 6cm sides total 12cm. Subtract from 20cm then halve.","solution":"Two sides = 6 + 6 = 12cm\nRemaining = 20 - 12 = 8cm\nEach side = 8 divided by 2 = 4cm\nAnswer: 4cm"},{"type":"Word Problem","text":"A rectangular garden is 10m long and 4m wide. What is its area?","answer":"40","unit":"sq m","hint":"Area = length x width.","solution":"Area = 10 x 4 = 40 sq m\nAnswer: 40 sq m"},{"type":"Word Problem","text":"What is the perimeter of a square with sides of 9cm?","answer":"36","unit":"cm","hint":"A square has 4 equal sides. Multiply one side by 4.","solution":"Perimeter = 4 x 9 = 36cm\nAnswer: 36cm"},{"type":"Which is Bigger","text":"Which has the bigger area?\nA rectangle 4cm x 6cm\nOR a square with sides 5cm\n\nType 1 for rectangle, 2 for square.","answer":"2","unit":"","hint":"Work out both areas and compare.","solution":"Rectangle: 4 x 6 = 24 sq cm\nSquare: 5 x 5 = 25 sq cm\nSquare is bigger!\nAnswer: 2"},{"type":"Word Problem","text":"A rectangular room is 6m long and 4m wide. How many square metres of carpet are needed to cover the floor?","answer":"24","unit":"sq m","hint":"Carpet needed = area of floor = length x width.","solution":"Area = 6 x 4 = 24 sq m\nAnswer: 24 sq m"},{"type":"Word Problem","text":"A rectangular photo frame is 15cm long and 10cm wide. What is the perimeter?","answer":"50","unit":"cm","hint":"Perimeter = 2 x length + 2 x width.","solution":"Perimeter = 2 x 15 + 2 x 10\n= 30 + 20 = 50cm\nAnswer: 50cm"}],"medium":[{"type":"Word Problem","text":"Rishika's mother wants to tile a kitchen floor 6m long and 4m wide. Each tile covers 1 sq m. How many tiles does she need?","answer":"24","unit":"tiles","hint":"Number of tiles = area of floor.","solution":"Area = 6 x 4 = 24 sq m\nTiles needed = 24\nAnswer: 24 tiles"},{"type":"Word Problem","text":"A rectangular cricket pitch is 20m long and 3m wide. What is its perimeter?","answer":"46","unit":"m","hint":"Perimeter = 2 x length + 2 x width.","solution":"Perimeter = 2 x 20 + 2 x 3 = 40 + 6 = 46m\nAnswer: 46m"},{"type":"Word Problem","text":"A square garden has an area of 49 sq m. What is the length of each side?","answer":"7","unit":"m","hint":"Area of square = side x side. What number multiplied by itself gives 49?","solution":"Side x side = 49\n7 x 7 = 49\nSide = 7m\nAnswer: 7m"},{"type":"Spot the Mistake","text":"Spot the mistake: Rohan calculates the perimeter of a 7cm x 4cm rectangle as 28cm. What is the correct perimeter?","answer":"22","unit":"cm","hint":"Perimeter = 2 x length + 2 x width. Rohan multiplied instead of adding properly.","solution":"Perimeter = 2 x 7 + 2 x 4 = 14 + 8 = 22cm\nRowan got 28 (he found the area!)\nAnswer: 22cm"},{"type":"Word Problem","text":"A farmer wants to fence a field 15m x 12m. Fencing costs Rs.85 per metre. How much will it cost?","answer":"4590","unit":"Rs.","hint":"First find the perimeter, then multiply by the cost per metre.","solution":"Perimeter = 2 x 15 + 2 x 12 = 30 + 24 = 54m\nCost = 54 x Rs.85\n50 x 85 = 4250\n4 x 85 = 340\nTotal = Rs.4590\nAnswer: Rs.4590"},{"type":"Odd One Out","text":"Which has a DIFFERENT area from the others?\n3x8 rectangle, 4x6 rectangle, 5x5 square, 2x12 rectangle\n\nType the area that is different.","answer":"25","unit":"sq cm","hint":"Calculate the area of each shape. Which one is different?","solution":"3 x 8 = 24\n4 x 6 = 24\n5 x 5 = 25\n2 x 12 = 24\nThe 5x5 square has area 25 - all others have area 24\nAnswer: 25 sq cm"},{"type":"Word Problem","text":"A square garden has the same perimeter as a 10m x 6m rectangle. What is the area of the square?","answer":"64","unit":"sq m","hint":"Find the rectangle perimeter. Then find the square side. Then find its area.","solution":"Rectangle perimeter = 2x10 + 2x6 = 32m\nSquare side = 32 divided by 4 = 8m\nSquare area = 8 x 8 = 64 sq m\nAnswer: 64 sq m"},{"type":"Word Problem","text":"A triangular garden has a base of 10m and a height of 6m. What is its area?","answer":"30","unit":"sq m","hint":"Area of triangle = half x base x height.","solution":"Area = 1/2 x 10 x 6\n= 1/2 x 60\n= 30 sq m\nAnswer: 30 sq m"},{"type":"Word Problem","text":"A rectangle is 12cm long. Its area is 60 sq cm. What is its width?","answer":"5","unit":"cm","hint":"Area = length x width. So width = area divided by length.","solution":"60 = 12 x width\nWidth = 60 divided by 12 = 5cm\nAnswer: 5cm"},{"type":"Word Problem","text":"A path runs around the outside of a rectangular garden 8m x 5m. The path is 1m wide. What is the perimeter of the outside edge of the path?","answer":"34","unit":"m","hint":"The path adds 1m to each side. Outside rectangle = (8+2) x (5+2).","solution":"Outside = (8+2) x (5+2) = 10 x 7\nPerimeter = 2 x 10 + 2 x 7 = 20 + 14 = 34m\nAnswer: 34m"}],"hard":[{"type":"Multi-step","text":"A playground plot is 35m x 28m. They lay grass everywhere except a 35m x 2m path along one edge. What area is covered in grass?","answer":"910","unit":"sq m","hint":null,"solution":"Total area = 35 x 28 = 980 sq m\nPath area = 35 x 2 = 70 sq m\nGrass = 980 - 70 = 910 sq m\nAnswer: 910 sq m"},{"type":"Spot the Mistake","text":"Spot the mistake: Amit finds the area of a triangle with base 8cm and height 5cm. He writes 8 x 5 = 40 sq cm. What is the correct area?","answer":"20","unit":"sq cm","hint":null,"solution":"Area of triangle = 1/2 x base x height\n= 1/2 x 8 x 5\n= 20 sq cm\nAmit forgot to halve!\nAnswer: 20 sq cm"},{"type":"Multi-step","text":"A square has the same area as a 16cm x 4cm rectangle. What is the perimeter of the square?","answer":"32","unit":"cm","hint":null,"solution":"Rectangle area = 16 x 4 = 64 sq cm\nSquare area = 64\nSquare side = 8cm (8 x 8 = 64)\nSquare perimeter = 4 x 8 = 32cm\nAnswer: 32cm"},{"type":"Multi-step","text":"A rectangular wall is 4.5m wide and 3m tall. Paint costs Rs.220 per sq m. How many full tins are needed if each tin covers 6 sq m?","answer":"3","unit":"tins","hint":null,"solution":"Area = 4.5 x 3 = 13.5 sq m\nTins = 13.5 divided by 6 = 2.25\nRound UP = 3 tins needed\nAnswer: 3 tins"},{"type":"Multi-step","text":"A triangular garden has base 12m and height 7m. A rectangular pond inside measures 4m x 3m. What area of the garden is NOT covered by the pond?","answer":"30","unit":"sq m","hint":null,"solution":"Triangle area = 1/2 x 12 x 7 = 42 sq m\nPond area = 4 x 3 = 12 sq m\nRemaining = 42 - 12 = 30 sq m\nAnswer: 30 sq m"},{"type":"Multi-step","text":"An L-shaped room is made of two rectangles: 6m x 4m and 3m x 2m. What is the total area?","answer":"30","unit":"sq m","hint":null,"solution":"Area 1 = 6 x 4 = 24 sq m\nArea 2 = 3 x 2 = 6 sq m\nTotal = 24 + 6 = 30 sq m\nAnswer: 30 sq m"},{"type":"Multi-step","text":"Rishika's mother wants to tile a rectangular kitchen 5m x 4m using 1m x 1m tiles. How many tiles does she need?","answer":"20","unit":"tiles","hint":null,"solution":"Floor area = 5 x 4 = 20 sq m\nEach tile = 1 sq m\nTiles needed = 20\nAnswer: 20 tiles"},{"type":"Multi-step","text":"A rectangular field is 45m x 30m. A farmer puts a fence all around it. Fencing comes in 5m sections costing Rs.650 each. What is the total cost?","answer":"19500","unit":"Rs.","hint":null,"solution":"Perimeter = 2x45 + 2x30 = 90 + 60 = 150m\nSections = 150 divided by 5 = 30\nCost = 30 x Rs.650 = Rs.19500\nAnswer: Rs.19500"},{"type":"Spot the Mistake","text":"Spot the mistake: Priya says a 3cm x 8cm rectangle and a 5cm x 5cm square have the same area. What is the area of each?","answer":"24","unit":"sq cm for rectangle","hint":null,"solution":"Rectangle: 3 x 8 = 24 sq cm\nSquare: 5 x 5 = 25 sq cm\n24 is NOT equal to 25\nPriya is wrong!\nAnswer: rectangle = 24 sq cm"},{"type":"Multi-step","text":"A school hall is 25m long and 15m wide. A running track 2m wide is marked around the inside edge. What is the area of the running track?","answer":"144","unit":"sq m","hint":null,"solution":"Total hall = 25 x 15 = 375 sq m\nInner area = (25-4) x (15-4) = 21 x 11 = 231 sq m\nTrack = 375 - 231 = 144 sq m\nAnswer: 144 sq m"}]},"measurement":{"easy":[{"type":"Word Problem","text":"Rishika's water bottle holds 750ml. How many ml short of 1 litre is that?","answer":"250","unit":"ml","hint":"1 litre = 1000ml. Subtract 750 from 1000.","solution":"1000ml - 750ml = 250ml\nAnswer: 250ml"},{"type":"Word Problem","text":"A bag of rice weighs 5kg. How many grams is that?","answer":"5000","unit":"g","hint":"1kg = 1000g. Multiply 5 by 1000.","solution":"5kg x 1000 = 5000g\nAnswer: 5000g"},{"type":"True or False","text":"True or False: 100cm is the same as 1m.\n\nType 1 for True, 0 for False.","answer":"1","unit":"","hint":"1 metre = 100 centimetres.","solution":"1m = 100cm\nSo 100cm = 1m\nAnswer: TRUE (type 1)"},{"type":"Which Unit","text":"Which unit would you use to measure the weight of a single grain of rice?\n\nType 1 for kg, 2 for g.","answer":"2","unit":"","hint":"A grain of rice is tiny. kg is used for heavy things.","solution":"A grain of rice is very light\ng (grams) is the right unit\nAnswer: 2 (grams)"},{"type":"Spot the Mistake","text":"Spot the mistake: Priya says 2.5km is the same as 250m. What is the correct number of metres?","answer":"2500","unit":"m","hint":"1km = 1000m. Multiply 2.5 by 1000.","solution":"2.5km x 1000 = 2500m\nPriya multiplied by 100 not 1000\nAnswer: 2500m"},{"type":"Missing Number","text":"Fill in the missing number:\n3m = ___cm","answer":"300","unit":"cm","hint":"1m = 100cm. Multiply 3 by 100.","solution":"3m x 100 = 300cm\nAnswer: 300cm"},{"type":"Ordering","text":"Arrange smallest to largest:\n1.5kg, 800g, 1200g, 0.5kg\n\nType the SMALLEST in grams.","answer":"500","unit":"g","hint":"Convert everything to grams. 1kg = 1000g.","solution":"1.5kg = 1500g\n800g = 800g\n1200g = 1200g\n0.5kg = 500g\nSmallest = 500g\nAnswer: 500"},{"type":"True or False","text":"True or False: 500cm = 5m.\n\nType 1 for True, 0 for False.","answer":"1","unit":"","hint":"1m = 100cm. Divide 500 by 100.","solution":"500 divided by 100 = 5\nSo 500cm = 5m\nAnswer: TRUE (type 1)"},{"type":"Word Problem","text":"A ribbon is 2m long. Rishika cuts off 45cm. How much ribbon is left in cm?","answer":"155","unit":"cm","hint":"Convert 2m to cm first. 2m = 200cm. Then subtract.","solution":"2m = 200cm\n200cm - 45cm = 155cm\nAnswer: 155cm"},{"type":"Word Problem","text":"A jug holds 2 litres. Rishika pours out 750ml. How much is left in ml?","answer":"1250","unit":"ml","hint":"Convert 2 litres to ml first. 1 litre = 1000ml.","solution":"2 litres = 2000ml\n2000ml - 750ml = 1250ml\nAnswer: 1250ml"}],"medium":[{"type":"Word Problem","text":"Rishika's dadi makes 2.5 litres of chai. She pours it into 250ml cups. How many cups can she fill?","answer":"10","unit":"cups","hint":"Convert 2.5 litres to ml first, then divide by 250.","solution":"2.5 litres = 2500ml\n2500 divided by 250 = 10 cups\nAnswer: 10 cups"},{"type":"Word Problem","text":"A vegetable vendor has 3kg of tomatoes. He sells 750g in the morning and 1.2kg in the afternoon. How much is left in grams?","answer":"1050","unit":"g","hint":"Convert everything to grams. 3kg=3000g, 1.2kg=1200g.","solution":"3kg = 3000g\nSold = 750 + 1200 = 1950g\nLeft = 3000 - 1950 = 1050g\nAnswer: 1050g"},{"type":"Spot the Mistake","text":"Spot the mistake: Rohan says 1.5km + 800m = 1.3km. What is the correct answer in km?","answer":"2.3","unit":"km","hint":"Convert 800m to km first. 800m = 0.8km. Then add.","solution":"800m = 0.8km\n1.5 + 0.8 = 2.3km\nRohan subtracted instead of adding!\nAnswer: 2.3km"},{"type":"Word Problem","text":"Rishika runs 400m every day. How many km does she run in a week?","answer":"2.8","unit":"km","hint":"First find total metres (400 x 7), then convert to km.","solution":"Total = 400 x 7 = 2800m\n2800 divided by 1000 = 2.8km\nAnswer: 2.8km"},{"type":"Word Problem","text":"A recipe needs 750ml of milk. Rishika only has a 200ml cup. How many full cups does she need?","answer":"3","unit":"full cups","hint":"Divide 750 by 200. How many times does 200 go into 750?","solution":"750 divided by 200 = 3 remainder 150\n3 full cups = 600ml\n150ml remaining\nAnswer: 3 full cups"},{"type":"Ordering","text":"Arrange smallest to largest:\n1.2m, 85cm, 1050mm, 0.9m\n\nType the LARGEST in cm.","answer":"120","unit":"cm","hint":"Convert all to cm. 1m=100cm, 1mm=0.1cm.","solution":"1.2m = 120cm\n85cm = 85cm\n1050mm = 105cm\n0.9m = 90cm\nLargest = 120cm\nAnswer: 120"},{"type":"Word Problem","text":"A school swimming pool is 25m long. Rishika swims 8 lengths. How many metres does she swim?","answer":"200","unit":"m","hint":"Multiply pool length by number of lengths.","solution":"25m x 8 = 200m\nAnswer: 200m"},{"type":"True or False","text":"True or False: 2500ml is more than 2 litres.\n\nType 1 for True, 0 for False.","answer":"1","unit":"","hint":"2 litres = 2000ml. Is 2500 more than 2000?","solution":"2 litres = 2000ml\n2500ml is more than 2000ml\nAnswer: TRUE (type 1)"},{"type":"Word Problem","text":"A bag of flour weighs 2.5kg. Rishika's mother uses 750g for rotis. How much flour is left in kg?","answer":"1.75","unit":"kg","hint":"Convert 750g to kg first. 750g = 0.75kg. Then subtract.","solution":"750g = 0.75kg\n2.5kg - 0.75kg = 1.75kg\nAnswer: 1.75kg"},{"type":"Word Problem","text":"Rishika's father drives 3.2km to the station. How many metres is that?","answer":"3200","unit":"m","hint":"1km = 1000m. Multiply by 1000.","solution":"3.2km x 1000 = 3200m\nAnswer: 3200m"}],"hard":[{"type":"Multi-step","text":"Rishika's mother buys 2.5kg of flour at Rs.42 per kg, 750g of sugar at Rs.56 per kg and 1.5 litres of oil at Rs.130 per litre. What is the total cost?","answer":"342","unit":"Rs.","hint":null,"solution":"Flour: 2.5 x 42 = Rs.105\nSugar: 0.75 x 56 = Rs.42\nOil: 1.5 x 130 = Rs.195\nTotal = 105 + 42 + 195 = Rs.342\nAnswer: Rs.342"},{"type":"Multi-step","text":"A school swimming pool is 25m long. Rishika swims 16 lengths. How many more lengths does she need to swim a total of 1km?","answer":"24","unit":"more lengths","hint":null,"solution":"Distance swum = 25 x 16 = 400m\n1km = 1000m\nRemaining = 1000 - 400 = 600m\nMore lengths = 600 divided by 25 = 24\nAnswer: 24 more lengths"},{"type":"Multi-step","text":"A water tank holds 500 litres. A family uses 125 litres per day. After how many days will the tank be less than half full?","answer":"3","unit":"days","hint":null,"solution":"Half full = 250 litres\nAfter 1 day: 500-125 = 375 litres\nAfter 2 days: 375-125 = 250 litres (exactly half)\nAfter 3 days: 250-125 = 125 litres (less than half)\nAnswer: after 3 days"},{"type":"Spot the Mistake","text":"Spot the mistake: Amit converts 3.5kg to grams and gets 350g. He adds 650g and gets 1000g. What should 3.5kg + 650g equal in kg?","answer":"4.15","unit":"kg","hint":null,"solution":"3.5kg = 3500g (NOT 350g)\n3500g + 650g = 4150g\n4150g = 4.15kg\nAmit multiplied by 100 not 1000\nAnswer: 4.15kg"},{"type":"Multi-step","text":"Rishika's father drives 3.2km to the station, takes a train for 28km and walks 850m to his office. What is the total journey in km?","answer":"32.05","unit":"km","hint":null,"solution":"3.2km + 28km + 850m\n850m = 0.85km\nTotal = 3.2 + 28 + 0.85 = 32.05km\nAnswer: 32.05km"},{"type":"Multi-step","text":"A dabbawala delivers 48 tiffin boxes each weighing 850g. What is the total weight in kg? His bicycle can carry maximum 45kg. Is he within the limit?","answer":"40.8","unit":"kg","hint":null,"solution":"Total = 48 x 850g = 40800g\n40800g = 40.8kg\n40.8kg is less than 45kg so he IS within the limit\nAnswer: 40.8kg"},{"type":"Multi-step","text":"A recipe for 4 people needs 600g of flour. Rishika wants to make it for 10 people. How much flour does she need in kg?","answer":"1.5","unit":"kg","hint":null,"solution":"Scale factor = 10 divided by 4 = 2.5\nFlour = 600g x 2.5 = 1500g = 1.5kg\nAnswer: 1.5kg"},{"type":"Multi-step","text":"A shop sells juice in 250ml cartons for Rs.15 each and 1 litre bottles for Rs.48 each. Rishika needs 2 litres. Which is cheaper and by how much?","answer":"24","unit":"Rs. cheaper","hint":null,"solution":"Cartons: 2000ml divided by 250 = 8 cartons\n8 x Rs.15 = Rs.120\nBottles: 2 x Rs.48 = Rs.96\nBottles cheaper by Rs.120 - Rs.96 = Rs.24\nAnswer: Rs.24 cheaper"},{"type":"Multi-step","text":"Rishika's school orders 24 bottles of water (1.5 litres each) and 36 cartons of juice (200ml each). What is the total volume of drinks in litres?","answer":"43.2","unit":"litres","hint":null,"solution":"Water: 24 x 1.5 = 36 litres\nJuice: 36 x 200ml = 7200ml = 7.2 litres\nTotal = 36 + 7.2 = 43.2 litres\nAnswer: 43.2 litres"},{"type":"Multi-step","text":"Rishika's mother buys 3.5kg of onions at Rs.28 per kg, 2kg of potatoes at Rs.22 per kg and 500g of ginger at Rs.120 per kg. What is the total cost?","answer":"201","unit":"Rs.","hint":null,"solution":"Onions: 3.5 x 28 = Rs.98\nPotatoes: 2 x 22 = Rs.44\nGinger: 0.5 x 120 = Rs.60\nTotal = 98 + 44 + 60 = Rs.202\nNote: correct answer is 202"}]},"time":{"easy":[{"type":"Word Problem","text":"Rishika's school starts at 8:30am. Write this in 24-hour time. Type the hours only.","answer":"8","unit":":30","hint":"Morning times before noon stay the same in 24-hour time.","solution":"8:30am in 24-hour time = 08:30\nMorning times stay the same\nAnswer: 8 (as in 08:30)"},{"type":"True or False","text":"True or False: 14:30 is the same as 2:30pm.\n\nType 1 for True, 0 for False.","answer":"1","unit":"","hint":"To convert afternoon 24-hour time: subtract 12. 14-12=2.","solution":"14:30 - subtract 12 from hours\n14-12 = 2\nSo 14:30 = 2:30pm\nAnswer: TRUE (type 1)"},{"type":"Word Problem","text":"A cricket match starts at 9:15am and ends at 1:15pm. How long does it last in hours?","answer":"4","unit":"hours","hint":"Count from 9:15am to 1:15pm. Same minutes so just count the hours.","solution":"9:15am to 1:15pm\nSame minutes so count hours\n9am to 1pm = 4 hours\nAnswer: 4 hours"},{"type":"Spot the Mistake","text":"Spot the mistake: Priya says 3:45pm in 24-hour time is 3:45. What is the correct 24-hour time? Type the hours only.","answer":"15","unit":":45","hint":"For pm times add 12 to the hours. 3 + 12 = ?","solution":"3:45pm: add 12 to hours\n3 + 12 = 15\n3:45pm = 15:45\nPriya forgot to add 12\nAnswer: 15"},{"type":"Word Problem","text":"Which is earlier: 13:45 or 2:15pm?\n\nType 1 for 13:45, 2 for 2:15pm.","answer":"1","unit":"","hint":"Convert 2:15pm to 24-hour. 2pm + 12 = 14:15.","solution":"13:45 = 1:45pm\n2:15pm = 14:15\n1:45pm is earlier than 2:15pm\nAnswer: 1 (13:45 is earlier)"},{"type":"Word Problem","text":"Convert 90 minutes into hours and minutes. Type the number of whole hours.","answer":"1","unit":"hour 30 mins","hint":"60 minutes = 1 hour. How many hours in 90 minutes?","solution":"90 divided by 60 = 1 hour remainder 30 minutes\nAnswer: 1 hour 30 minutes"},{"type":"True or False","text":"True or False: 6:00pm in 24-hour time is 18:00.\n\nType 1 for True, 0 for False.","answer":"1","unit":"","hint":"6pm: add 12. 6 + 12 = 18.","solution":"6pm + 12 = 18\n6:00pm = 18:00\nAnswer: TRUE (type 1)"},{"type":"Word Problem","text":"Rishika starts homework at 4:30pm and finishes at 5:15pm. How long does she work in minutes?","answer":"45","unit":"minutes","hint":"Count from 4:30 to 5:15. From 4:30 to 5:00 is 30 mins, then 15 more.","solution":"4:30pm to 5:00pm = 30 minutes\n5:00pm to 5:15pm = 15 minutes\nTotal = 45 minutes\nAnswer: 45 minutes"},{"type":"Word Problem","text":"A film starts at 7:40pm and lasts 2 hours. What time does it end? Type the hours in 24-hour format.","answer":"21","unit":":40","hint":"7:40pm = 19:40. Add 2 hours.","solution":"7:40pm = 19:40\n19:40 + 2 hours = 21:40\nAnswer: 21 (as in 21:40)"},{"type":"Word Problem","text":"How many minutes are in 3 hours?","answer":"180","unit":"minutes","hint":"1 hour = 60 minutes. Multiply 60 by 3.","solution":"3 hours x 60 = 180 minutes\nAnswer: 180 minutes"}],"medium":[{"type":"Word Problem","text":"Rishika's favourite TV show starts at 6:45pm and lasts 55 minutes. What time does it end? Type the hours in 24-hour format.","answer":"19","unit":":40","hint":"6:45pm = 18:45. Add 55 minutes. 45+55=100 minutes = 1hr 40mins.","solution":"6:45pm = 18:45\n45 + 55 = 100 minutes = 1hr 40mins\n18:45 + 1hr 40mins = 19:00 + 40mins = 19:40\nAnswer: 19 (as in 19:40)"},{"type":"Word Problem","text":"A train leaves Mumbai at 11:50am and arrives in Pune at 1:25pm. How long is the journey in minutes?","answer":"95","unit":"minutes","hint":"Count from 11:50 to 1:25. First count to 12:00 then to 1:25.","solution":"11:50 to 12:00 = 10 minutes\n12:00 to 1:25pm = 85 minutes\nTotal = 10 + 85 = 95 minutes\nAnswer: 95 minutes"},{"type":"Spot the Mistake","text":"Spot the mistake: Rohan says a film starting at 7:40pm lasting 2 hours 35 minutes ends at 9:75pm. Type the correct end time hours in 24-hour format.","answer":"22","unit":":15","hint":"You cannot have 75 minutes. 60 minutes = 1 hour.","solution":"7:40pm = 19:40\n19:40 + 2hrs 35mins\nMinutes: 40+35=75, 75-60=15, carry 1 hour\nHours: 19+2+1=22\nEnd time: 22:15\nAnswer: 22"},{"type":"Word Problem","text":"Rishika studies 1 hour 20 minutes in the morning and 45 minutes in the evening. How long does she study in total? Type the total in minutes.","answer":"125","unit":"minutes","hint":"Convert 1 hour 20 minutes to minutes first, then add 45.","solution":"1 hour 20 mins = 80 minutes\n80 + 45 = 125 minutes\nAnswer: 125 minutes"},{"type":"Word Problem","text":"A school day starts at 8:00am and ends at 3:30pm with a 45-minute lunch break. How many minutes of lesson time are there?","answer":"405","unit":"minutes","hint":"Find total school time in minutes then subtract the lunch break.","solution":"8:00am to 3:30pm = 7.5 hours = 450 minutes\n450 - 45 = 405 minutes of lessons\nAnswer: 405 minutes"},{"type":"Odd One Out","text":"Which is the odd one out?\n90 minutes, 1 and a half hours, 1 hour 30 minutes, 1 hour 20 minutes\n\nType the odd one out in minutes.","answer":"80","unit":"minutes","hint":"Convert all to minutes. Which one is different?","solution":"90 minutes = 90\n1 and a half hours = 90\n1 hour 30 mins = 90\n1 hour 20 mins = 80\n1 hour 20 minutes is the odd one out\nAnswer: 80"},{"type":"Word Problem","text":"Convert 145 minutes into hours and minutes. Type the number of whole hours.","answer":"2","unit":"hours 25 mins","hint":"Divide 145 by 60. The remainder gives the extra minutes.","solution":"145 divided by 60 = 2 remainder 25\n145 minutes = 2 hours 25 minutes\nAnswer: 2 (hours and 25 minutes)"},{"type":"Word Problem","text":"Rishika's dadi wakes at 5:45am, does yoga for 40 minutes then makes chai for 20 minutes. What time does she finish making chai? Type the hours.","answer":"6","unit":":45am","hint":"Add 40 minutes then 20 minutes to 5:45am.","solution":"5:45am + 40 mins = 6:25am\n6:25am + 20 mins = 6:45am\nAnswer: 6 (as in 6:45am)"},{"type":"Word Problem","text":"A cricket match morning session starts at 9:30am and lasts 2 hours 15 minutes. What time does it end? Type the hours.","answer":"11","unit":":45am","hint":"Add 2 hours 15 minutes to 9:30am.","solution":"9:30am + 2 hours = 11:30am\n11:30am + 15 mins = 11:45am\nAnswer: 11 (as in 11:45am)"},{"type":"Word Problem","text":"A train timetable shows departures at 06:15, 09:40, 13:25 and 17:50. Which departure is closest to 2pm? Type the hours of that departure.","answer":"13","unit":":25","hint":"2pm = 14:00. Which departure time is nearest to 14:00?","solution":"13:25 is 35 minutes before 14:00\n17:50 is 3hrs 50mins after 14:00\n13:25 is closest\nAnswer: 13 (as in 13:25)"}],"hard":[{"type":"Multi-step","text":"Rishika's dadi wakes at 5:45am, does yoga for 40 minutes, makes chai for 20 minutes and reads for 1 hour 15 minutes. What time does she finish reading? Type the hours.","answer":"8","unit":":00am","hint":null,"solution":"5:45am + 40 mins = 6:25am\n6:25am + 20 mins = 6:45am\n6:45am + 1hr 15mins = 8:00am\nAnswer: 8 (as in 8:00am)"},{"type":"Spot the Mistake","text":"Spot the mistake: A film starts at 23:10 and lasts 2 hours 40 minutes. Amit says it ends at 25:50. What is the correct end time? Type the hours.","answer":"1","unit":":50 next day","hint":null,"solution":"23:10 + 2hrs 40mins\nMinutes: 10+40=50\nHours: 23+2=25, but 25:50 is impossible!\n25-24=1, so it ends at 01:50 next day\nAnswer: 1 (as in 01:50 next morning)"},{"type":"Multi-step","text":"A cricket match: morning session 2hrs 15mins, lunch 40mins, afternoon session 2hrs 45mins, tea 20mins, evening 1hr. Match starts 9:30am. What time does it end? Type the hours in 24-hour format.","answer":"16","unit":":30","hint":null,"solution":"9:30 + 2:15 = 11:45\n11:45 + 0:40 = 12:25\n12:25 + 2:45 = 15:10\n15:10 + 0:20 = 15:30\n15:30 + 1:00 = 16:30\nAnswer: 16 (as in 16:30)"},{"type":"Multi-step","text":"Rishika's mother works 6 hours 45 minutes each day for 5 days. What is her total working time in minutes?","answer":"2025","unit":"minutes","hint":null,"solution":"6hrs 45mins = 405 minutes per day\n405 x 5 = 2025 minutes\nAnswer: 2025 minutes"},{"type":"Multi-step","text":"A train leaves Delhi at 22:30 and arrives in Mumbai 17 hours 45 minutes later. What time does it arrive? Type the hours.","answer":"16","unit":":15 next day","hint":null,"solution":"22:30 + 17hrs 45mins\nMinutes: 30+45=75, 75-60=15, carry 1\nHours: 22+17+1=40, 40-24=16\nArrival: 16:15 next day\nAnswer: 16"},{"type":"Multi-step","text":"A New Year's Eve party starts at 21:30 on 31st December and lasts 4 hours 45 minutes. How many minutes past midnight does it end?","answer":"135","unit":"minutes past midnight","hint":null,"solution":"21:30 + 4hrs 45mins\nMinutes: 30+45=75, 75-60=15, carry 1\nHours: 21+4+1=26, 26-24=2\nEnd time: 02:15am on 1st January\n2hrs 15mins past midnight = 135 minutes\nAnswer: 135"},{"type":"Multi-step","text":"Rishika's school has 6 lessons of 45 minutes each, a 15-minute morning break and a 45-minute lunch break. School starts at 8:00am. What time does school end? Type the hours.","answer":"13","unit":":30","hint":null,"solution":"Lessons: 6 x 45 = 270 minutes\nBreaks: 15 + 45 = 60 minutes\nTotal: 330 minutes = 5 hours 30 minutes\n8:00am + 5:30 = 13:30\nAnswer: 13 (as in 13:30)"},{"type":"Spot the Mistake","text":"Spot the mistake: Priya says 2 hours 45 minutes + 1 hour 30 minutes = 3 hours 75 minutes. What is the correct answer? Type the hours.","answer":"4","unit":"hours 15 minutes","hint":null,"solution":"Minutes: 45+30 = 75\n75 minutes = 1 hour 15 minutes\nHours: 2+1+1 = 4\nCorrect: 4 hours 15 minutes\nAnswer: 4 (hours and 15 minutes)"},{"type":"Multi-step","text":"Rishika records her study time for 5 days: Mon 1hr 20min, Tue 45min, Wed 1hr 30min, Thu 50min, Fri 1hr 15min. What is her total in minutes?","answer":"340","unit":"minutes","hint":null,"solution":"Mon: 80 minutes\nTue: 45 minutes\nWed: 90 minutes\nThu: 50 minutes\nFri: 75 minutes\nTotal: 80+45+90+50+75 = 340 minutes\nAnswer: 340 minutes"},{"type":"Multi-step","text":"A bus leaves every 25 minutes starting from 6:00am. Rishika arrives at the bus stop at 7:10am. How long does she wait for the next bus?","answer":"5","unit":"minutes","hint":null,"solution":"Buses: 6:00, 6:25, 6:50, 7:15, 7:40...\nRishika arrives at 7:10am\nNext bus is 7:15am\nWait = 5 minutes\nAnswer: 5 minutes"}]}};
+
+var topicMeta = {
+  arithmetic: { name:'Number & Arithmetic', color:'#FF6B6B', covers:['Multiplication up to 12x12 and beyond','Division including remainders','Mental maths with large numbers','Long multiplication','Short division','Missing number problems'] },
+  fractions:  { name:'Fractions', color:'#2EC4B6', covers:['Understanding fractions','Equivalent fractions','Comparing and ordering fractions','Adding and subtracting fractions','Fractions of amounts','Mixed numbers and improper fractions','Simplifying fractions'] },
+  decimals:   { name:'Decimals', color:'#FF6B6B', covers:['Decimal place value - tenths and hundredths','Ordering and comparing decimals','Adding and subtracting decimals','Multiplying and dividing by 10 and 100','Rounding decimals','Decimals in money and measurement'] },
+  negative:   { name:'Negative Numbers', color:'#4466cc', covers:['Understanding negative numbers','Ordering and comparing negatives','Counting through zero','Adding with negative numbers','Temperature problems','Finding the difference across zero'] },
+  rounding:   { name:'Rounding', color:'#9B59B6', covers:['Rounding to nearest 10, 100 and 1000','Rounding decimals to nearest whole number','Rounding decimals to nearest tenth','Estimating answers using rounding','Checking answers with estimation'] },
+  geometry:   { name:'Area & Perimeter', color:'#27AE60', covers:['Perimeter of squares and rectangles','Perimeter of irregular shapes','Area by counting squares on a grid','Area of rectangles (length x width)','Area of compound L-shaped figures','Area of triangles (half x base x height)','Real life problems'] },
+  measurement:{ name:'Units of Measurement', color:'#E67E22', covers:['Units of length - km, m, cm, mm','Units of weight - kg, g','Units of capacity - litres, ml','Converting between units','Ordering mixed unit measurements','Real life measurement problems'] },
+  time:       { name:'Time', color:'#E74C3C', covers:['Reading analogue and digital clocks','12-hour and 24-hour time','Converting between 12 and 24 hour','Calculating duration','Adding and subtracting time','Time across midnight','Reading timetables'] },
+  mixed:      { name:'Mixed Round', color:'#FF6B6B', covers:['Questions from all 8 topics','Multi-step word problems','Real Indian life contexts','No hints - test your knowledge!','The ultimate maths challenge'] }
+};
+
+var currentTopic = '';
+var currentTier = 'easy';
+var currentQuestions = [];
+var currentQIndex = 0;
+var currentAnswer = '';
+var sessionScore = 0;
+var sessionTotal = 5;
+var hintShown = false;
+var progress = {};
+
+function showScreen(id) {
+  var screens = document.querySelectorAll('.screen');
+  for (var i = 0; i < screens.length; i++) screens[i].classList.remove('active');
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+  if (id === 'parent-screen') buildParentView();
+}
+
+function openTopic(key) {
+  currentTopic = key;
+  currentTier = 'easy';
+  var meta = topicMeta[key];
+  document.getElementById('topic-title').textContent = meta.name;
+  document.getElementById('topic-subtitle').textContent = 'Choose your level below';
+  document.getElementById('topic-header-bar').style.background = meta.color;
+  var btns = document.querySelectorAll('.tier-btn');
+  for (var i = 0; i < btns.length; i++) btns[i].classList.remove('selected');
+  btns[0].classList.add('selected');
+  var list = document.getElementById('topic-covers-list');
+  list.innerHTML = '';
+  for (var j = 0; j < meta.covers.length; j++) {
+    var li = document.createElement('li');
+    li.textContent = meta.covers[j];
+    list.appendChild(li);
+  }
+  showScreen('topic-screen');
+}
+
+function selectTier(btn, tier) {
+  currentTier = tier;
+  var btns = document.querySelectorAll('.tier-btn');
+  for (var i = 0; i < btns.length; i++) btns[i].classList.remove('selected');
+  btn.classList.add('selected');
+}
+
+function getQuestions(topicKey, tier) {
+  var pool;
+  if (topicKey === 'mixed') {
+    var all = [];
+    var topics = ['arithmetic','fractions','decimals','negative','rounding','geometry','measurement','time'];
+    for (var t = 0; t < topics.length; t++) {
+      var hardQ = ALL_QUESTIONS[topics[t]].hard;
+      for (var q = 0; q < hardQ.length; q++) all.push(hardQ[q]);
+    }
+    pool = all;
+  } else {
+    pool = ALL_QUESTIONS[topicKey][tier];
+  }
+  var shuffled = pool.slice().sort(function() { return Math.random() - 0.5; });
+  return shuffled.slice(0, 5);
+}
+
+function startSession() {
+  currentQuestions = getQuestions(currentTopic, currentTier);
+  currentQIndex = 0;
+  sessionScore = 0;
+  sessionTotal = currentQuestions.length;
+  loadQuestion();
+  showScreen('question-screen');
+}
+
+function restartSession() { startSession(); }
+
+function loadQuestion() {
+  var q = currentQuestions[currentQIndex];
+  var meta = topicMeta[currentTopic];
+  document.getElementById('q-topic-name').textContent = meta.name;
+  document.getElementById('q-progress-text').textContent = 'Question ' + (currentQIndex + 1) + ' of ' + sessionTotal;
+  document.getElementById('progress-bar').style.width = ((currentQIndex / sessionTotal) * 100) + '%';
+  document.getElementById('q-header-bar').style.background = meta.color;
+  document.getElementById('q-type-badge').textContent = q.type;
+  document.getElementById('q-text').textContent = q.text;
+  document.getElementById('answer-unit').textContent = q.unit || '';
+  currentAnswer = '';
+  updateAnswerDisplay();
+  hintShown = false;
+  var hintBox = document.getElementById('q-hint');
+  hintBox.classList.remove('visible');
+  hintBox.textContent = q.hint || '';
+  var hintBtn = document.getElementById('hint-btn');
+  var showHintBtn = q.hint && (currentTier !== 'hard') && (currentTopic !== 'mixed');
+  hintBtn.style.display = showHintBtn ? 'block' : 'none';
+}
+
+function numPress(val) {
+  if (val === '-') {
+    if (currentAnswer === '') { currentAnswer = '-'; }
+    else if (currentAnswer === '-') { currentAnswer = ''; }
+    updateAnswerDisplay(); return;
+  }
+  if (val === '.') {
+    if (currentAnswer.indexOf('.') !== -1) return;
+    if (currentAnswer === '' || currentAnswer === '-') currentAnswer += '0';
+    currentAnswer += '.';
+    updateAnswerDisplay(); return;
+  }
+  if (currentAnswer.replace('-','').replace('.','').length >= 7) return;
+  currentAnswer += val;
+  updateAnswerDisplay();
+}
+
+function numDelete() {
+  currentAnswer = currentAnswer.slice(0, -1);
+  updateAnswerDisplay();
+}
+
+function updateAnswerDisplay() {
+  var el = document.getElementById('answer-display');
+  if (currentAnswer === '' || currentAnswer === '-') {
+    el.textContent = currentAnswer || 'Type your answer...';
+    el.classList.add('placeholder');
+  } else {
+    el.textContent = currentAnswer;
+    el.classList.remove('placeholder');
+  }
+}
+
+function showHint() {
+  if (hintShown) return;
+  hintShown = true;
+  document.getElementById('q-hint').classList.add('visible');
+  document.getElementById('hint-btn').style.display = 'none';
+}
+
+function submitAnswer() {
+  if (currentAnswer === '' || currentAnswer === '-' || currentAnswer === '.') return;
+  var q = currentQuestions[currentQIndex];
+  var correct = currentAnswer.trim() === q.answer.trim();
+  if (correct) sessionScore++;
+  document.getElementById('result-emoji').textContent = correct ? '&#127881;' : '&#128170;';
+  document.getElementById('result-title').textContent = correct ? 'Correct!' : 'Not quite!';
+  document.getElementById('result-subtitle').textContent = correct ? 'Brilliant work, Rishika!' : 'Keep going - every mistake helps you learn!';
+  document.getElementById('solution-steps').textContent = q.solution;
+  var isLast = currentQIndex >= sessionTotal - 1;
+  document.getElementById('btn-next').textContent = isLast ? 'See My Score' : 'Next Question';
+  showScreen('result-screen');
+}
+
+function nextQuestion() {
+  currentQIndex++;
+  if (currentQIndex >= sessionTotal) { showComplete(); }
+  else { loadQuestion(); showScreen('question-screen'); }
+}
+
+function showComplete() {
+  var pct = Math.round((sessionScore / sessionTotal) * 100);
+  var stars = pct >= 100 ? '* * * * *' : pct >= 80 ? '* * * *' : pct >= 60 ? '* * *' : pct >= 40 ? '* *' : '*';
+  document.getElementById('complete-stars').textContent = stars;
+  document.getElementById('final-score').textContent = sessionScore + '/' + sessionTotal;
+  var msg = pct === 100 ? 'Perfect score! You are amazing, Rishika!' : pct >= 80 ? 'Excellent work! Nearly perfect!' : pct >= 60 ? 'Good effort! Keep practising!' : 'Keep going - practice makes perfect!';
+  document.getElementById('complete-subtitle').textContent = msg;
+  saveProgress();
+  showScreen('complete-screen');
+}
+
+function saveProgress() {
+  if (!progress[currentTopic]) progress[currentTopic] = {};
+  if (!progress[currentTopic][currentTier]) progress[currentTopic][currentTier] = { attempts:0, totalScore:0, totalQ:0 };
+  progress[currentTopic][currentTier].attempts++;
+  progress[currentTopic][currentTier].totalScore += sessionScore;
+  progress[currentTopic][currentTier].totalQ += sessionTotal;
+}
+
+function getProgressPct(topicKey, tier) {
+  if (!progress[topicKey] || !progress[topicKey][tier]) return 0;
+  var p = progress[topicKey][tier];
+  if (p.totalQ === 0) return 0;
+  return Math.round((p.totalScore / p.totalQ) * 100);
+}
+
+function buildParentView() {
+  var body = document.getElementById('parent-body');
+  var html = '<h3 style="font-size:13px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:14px;">Progress by Topic</h3>';
+  var topics = ['arithmetic','fractions','decimals','negative','rounding','geometry','measurement','time'];
+  var tiers = [{key:'easy',label:'Getting Started'},{key:'medium',label:'Getting There'},{key:'hard',label:'Challenge'}];
+  var hasData = false;
+  for (var i = 0; i < topics.length; i++) {
+    var t = topics[i];
+    var meta = topicMeta[t];
+    html += '<div class="parent-topic-card"><div class="parent-topic-name">' + meta.name + '</div>';
+    for (var j = 0; j < tiers.length; j++) {
+      var tier = tiers[j];
+      var pct = getProgressPct(t, tier.key);
+      if (pct > 0) hasData = true;
+      html += '<div class="tier-progress-row">';
+      html += '<div class="tier-progress-label">' + tier.label + '</div>';
+      html += '<div class="tier-progress-bar"><div class="tier-progress-fill" style="width:' + pct + '%"></div></div>';
+      html += '<div class="tier-progress-pct">' + pct + '%</div>';
+      html += '</div>';
+    }
+    html += '</div>';
+  }
+  if (!hasData) html += '<div style="text-align:center;color:#aaa;font-size:14px;padding:20px;">No practice sessions yet!</div>';
+  body.innerHTML = html;
+}
+</script>
+</body>
+</html>
