@@ -74,7 +74,7 @@ body { font-family: Georgia, serif; background: var(--cream); color: var(--charc
 .home-icon-btn { background: rgba(255,255,255,0.25); border: none; border-radius: 10px; width: 38px; height: 38px; font-size: 18px; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 .progress-bar-wrap { background: #eee; height: 6px; }
 .progress-bar-fill { height: 6px; background: var(--teal); transition: width 0.4s ease; }
-.question-body { padding: 16px; flex: 1; }
+.question-body { padding: 10px 16px 8px; flex: 1; }
 .question-card { background: white; border-radius: 18px; padding: 20px; box-shadow: var(--shadow); margin-bottom: 14px; }
 .question-type-badge { display: inline-block; background: #f0f9f8; color: var(--teal); font-size: 11px; font-weight: bold; padding: 4px 10px; border-radius: 20px; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
 .question-text { font-size: 16px; color: var(--charcoal); line-height: 1.55; margin-bottom: 14px; white-space: pre-line; }
@@ -85,7 +85,7 @@ body { font-family: Georgia, serif; background: var(--cream); color: var(--charc
 .answer-display.placeholder { color: #ccc; font-size: 18px; font-weight: normal; }
 .answer-unit { font-size: 15px; color: #999; }
 .numpad { background: white; border-radius: 18px; padding: 12px; box-shadow: var(--shadow); margin-bottom: 14px; }
-.numpad-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.numpad-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
 .num-btn { background: #f8f8f8; border: none; border-radius: 12px; padding: 16px 8px; font-size: 22px; font-weight: bold; color: var(--charcoal); cursor: pointer; font-family: Georgia, serif; }
 .num-btn:active { background: #eee; transform: scale(0.94); }
 .num-btn.del-btn { background: #FFE8E8; color: var(--coral); font-size: 18px; }
@@ -287,11 +287,12 @@ body { font-family: Georgia, serif; background: var(--cream); color: var(--charc
       <div class="result-title" id="result-title">Correct!</div>
       <div class="result-subtitle" id="result-subtitle">Well done, Rishika!</div>
     </div>
-    <div class="worked-solution">
+    <div class="worked-solution" id="worked-solution-box">
       <h4>How to solve it</h4>
       <div class="solution-steps" id="solution-steps"></div>
     </div>
     <div class="result-actions">
+      <button id="btn-try-again" onclick="tryAgain()" style="display:none;background:#FFE66D;color:#2D2D2D;border:none;border-radius:16px;padding:16px;font-size:17px;font-weight:bold;cursor:pointer;font-family:Georgia,serif;box-shadow:0 4px 15px rgba(0,0,0,0.12);width:100%;">Try Again &#8635;</button>
       <button class="btn-next" id="btn-next" onclick="nextQuestion()">Next Question</button>
       <button class="btn-home" onclick="showScreen('home-screen')">Back to Home</button>
     </div>
@@ -349,6 +350,7 @@ var currentAnswer = '';
 var sessionScore = 0;
 var sessionTotal = 5;
 var hintShown = false;
+var retryUsed = false;
 var progress = {};
 
 function showScreen(id) {
@@ -415,6 +417,7 @@ function startSession() {
 function restartSession() { startSession(); }
 
 function loadQuestion() {
+  retryUsed = false;
   var q = currentQuestions[currentQIndex];
   var meta = topicMeta[currentTopic];
   document.getElementById('q-topic-name').textContent = meta.name;
@@ -479,14 +482,45 @@ function submitAnswer() {
   if (currentAnswer === '' || currentAnswer === '-' || currentAnswer === '.') return;
   var q = currentQuestions[currentQIndex];
   var correct = currentAnswer.trim() === q.answer.trim();
-  if (correct) sessionScore++;
-  document.getElementById('result-emoji').textContent = correct ? '&#127881;' : '&#128170;';
-  document.getElementById('result-title').textContent = correct ? 'Correct!' : 'Not quite!';
-  document.getElementById('result-subtitle').textContent = correct ? 'Brilliant work, Rishika!' : 'Keep going - every mistake helps you learn!';
-  document.getElementById('solution-steps').textContent = q.solution;
+  if (correct) {
+    sessionScore++;
+    document.getElementById('result-emoji').textContent = 'Correct!';
+    document.getElementById('result-title').textContent = 'Correct!';
+    document.getElementById('result-subtitle').textContent = 'Brilliant work, Rishika!';
+    document.getElementById('result-emoji').innerHTML = '&#127881;';
+    document.getElementById('btn-try-again').style.display = 'none';
+    document.getElementById('worked-solution-box').style.display = 'block';
+    document.getElementById('solution-steps').textContent = q.solution;
+  } else if (!retryUsed) {
+    retryUsed = true;
+    document.getElementById('result-emoji').innerHTML = '&#129300;';
+    document.getElementById('result-title').textContent = 'Not quite!';
+    document.getElementById('result-subtitle').textContent = 'Have one more try -- you can do it!';
+    document.getElementById('btn-try-again').style.display = 'block';
+    document.getElementById('worked-solution-box').style.display = 'none';
+  } else {
+    document.getElementById('result-emoji').innerHTML = '&#128170;';
+    document.getElementById('result-title').textContent = 'Keep going!';
+    document.getElementById('result-subtitle').textContent = 'Check the solution below -- you will get it next time!';
+    document.getElementById('btn-try-again').style.display = 'none';
+    document.getElementById('worked-solution-box').style.display = 'block';
+    document.getElementById('solution-steps').textContent = q.solution;
+  }
   var isLast = currentQIndex >= sessionTotal - 1;
   document.getElementById('btn-next').textContent = isLast ? 'See My Score' : 'Next Question';
   showScreen('result-screen');
+}
+
+function tryAgain() {
+  currentAnswer = '';
+  document.getElementById('btn-try-again').style.display = 'none';
+  updateAnswerDisplay();
+  var hintBox = document.getElementById('q-hint');
+  hintBox.classList.remove('visible');
+  hintShown = false;
+  var q = currentQuestions[currentQIndex];
+  if (q.hint && currentTier !== 'hard') document.getElementById('hint-btn').style.display = 'block';
+  showScreen('question-screen');
 }
 
 function nextQuestion() {
@@ -498,7 +532,7 @@ function nextQuestion() {
 function showComplete() {
   var pct = Math.round((sessionScore / sessionTotal) * 100);
   var stars = pct >= 100 ? '* * * * *' : pct >= 80 ? '* * * *' : pct >= 60 ? '* * *' : pct >= 40 ? '* *' : '*';
-  document.getElementById('complete-stars').textContent = stars;
+  document.getElementById('complete-stars').innerHTML = stars;
   document.getElementById('final-score').textContent = sessionScore + '/' + sessionTotal;
   var msg = pct === 100 ? 'Perfect score! You are amazing, Rishika!' : pct >= 80 ? 'Excellent work! Nearly perfect!' : pct >= 60 ? 'Good effort! Keep practising!' : 'Keep going - practice makes perfect!';
   document.getElementById('complete-subtitle').textContent = msg;
